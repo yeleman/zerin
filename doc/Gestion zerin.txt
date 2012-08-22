@@ -1,0 +1,13 @@
+DESCRIPTION:
+
+Logiciel de gestion pour les vendeurs de zerin (ex. cyber café)
+
+FONCTIONNALITÉ:
+* Saisie des numéros et montants ultra rapide.
+* Possibilité d'enregistrer les contacts.
+* Saisie multiple, envoi à la chaine.
+* Solde restant sur la puce.
+* Statistiques dutilisation.
+
+MATÉRIEL & ACHATS:
+* (1) modem.
