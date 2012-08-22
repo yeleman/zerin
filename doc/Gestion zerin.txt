@@ -8,6 +8,14 @@ FONCTIONNALITÉ:
 * Saisie multiple, envoi à la chaine.
 * Solde restant sur la puce.
 * Statistiques dutilisation.
+* Gestion de l'annuaire:
+    -Ajout de contact;
+    -Mise à jour des contacts
+    
+* Historique des envois
+* Protection de la page d'envoi
+* Page de configuration
 
 MATÉRIEL & ACHATS:
 * (1) modem.
+
