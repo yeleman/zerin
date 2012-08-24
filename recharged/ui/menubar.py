@@ -28,7 +28,7 @@ class MenuBar(QtGui.QMenuBar, F_Widget):
         help_ = self.addMenu(u"Aide")
         help_.addAction(QtGui.QIcon('images/help.png'), "Aide",
                                     self.goto_help)
-        help_.addAction(QtGui.QIcon('images/info.png'), u"A poropos",
+        help_.addAction(QtGui.QIcon('images/info.png'), u"À propos",
                                     self.goto_about)
 
     #Aide
@@ -39,16 +39,15 @@ class MenuBar(QtGui.QMenuBar, F_Widget):
     def goto_about(self):
         from model import VERSION
         QtGui.QMessageBox.about(self, u"À propos",
-                                u"<h2>ZERIN </h2> <b> Version: </b>%s <br/>"
-                                u"<i>Logiciel de gestion pour les vendeurs de zerin (ex. cyber café)</i><br/>"
+                                u"<h2>PACH TECH </h2> <b> Version: </b>%s <br/>"
+                                u"<i>Logiciel de gestion pour les vendeurs de nsɛrɛ et paani (ex. cyber café)</i><br/>"
                                 u"<h2>© 2012 yɛlɛman s.à.r.l</h2>"
                                 u"<ul>"
-                                    u"<li>Hippodrome, Avenue Al Quds, BPE. 3713 - Bamako (Mali)</li>"
-                                    u"<li><b>Tel:</b> (223) 76 33 30 05</li>"
-                                    u"<li><b>Tel:</b> (223) </li>"
-                                    u"<li><b>E-mail:</b>info@yeleman.com</li>"
-                                    u"<li><b>Site:</b> www.yeleman.com<li>"
-                                    u"<li><b>Developpeurs:</b></li>"
+                                    u"<li>Hippodrome, Rue 240 Porte 1068, BPE. 3713 - Bamako (Mali)</li>"
+                                    u"<li><b>Tél. :</b> (223) 20 21 05 87</li>"
+                                    u"<li><b>E-mail :</b>info@yeleman.com</li>"
+                                    u"<li><b>Site :</b> www.yeleman.com<li>"
+                                    u"<li><b>Développeurs :</b></li>"
                                          u"<ul><li>Renaud Gaudin</li>"
                                          u"<li>Ibrahima Fadiga</li>"
                                          u"<li>Alou Dolo</li> </ul>"

@@ -1,0 +1,38 @@
+
+[modem/hardware]
+* function send_ussd(ussd_text)
+* function send_credit(dest_number, amount) -> receipt_number
+* function send_credit_orange(dest_number, amount) -> receipt_number
+* function send_credit_malitel(dest_number, amount) -> receipt_number
+* function find_operator(number)
+* function get_sms()
+
+[ui/login]
+* login (password input)
+
+[ui/main]
+* 
+
+[ui/addressbook]
+* List contact
+* Edit/Add/Remove contact
+* Add/Edit/Remove Groups
+
+[ui/history]
+
+
+[ui/settings]
+* Change password
+* Set Operator codes
+
+
+[models]
+* Transfer
+* Operator
+* Identity (phone number)
+* Contact
+* Group/Contact
+* Settings (app password, orange code, malitel code)
+* Message
+
+[packaging]
