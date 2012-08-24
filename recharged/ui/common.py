@@ -2,8 +2,8 @@
 # encoding=utf-8
 # maintainer: Fadiga
 
-from PyQt4 import QtGui, QtCore
-from PyQt4.QtCore import Qt
+from PySide import QtGui, QtCore
+from PySide.QtCore import Qt
 
 MAIN_WIDGET_SIZE = 1300
 NB_DAY = 29

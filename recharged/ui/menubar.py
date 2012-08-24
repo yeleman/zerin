@@ -2,7 +2,7 @@
 # encoding=utf-8
 # maintainer: fad
 
-from PyQt4 import QtGui, QtCore
+from PySide import QtGui, QtCore
 
 from common import F_Widget
 

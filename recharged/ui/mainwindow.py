@@ -2,7 +2,7 @@
 # encoding=utf-8
 # maintainer: Fad
 
-from PyQt4 import QtGui
+from PySide import QtGui
 
 from home import HomeViewWidget
 from menubar import MenuBar

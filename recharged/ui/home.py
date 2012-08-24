@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # maintainer: Fadiga
 
-from PyQt4 import QtGui
+from PySide import QtGui
 
 from common import F_Widget, F_PageTitle
 
