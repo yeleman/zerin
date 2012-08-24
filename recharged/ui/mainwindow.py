@@ -4,8 +4,8 @@
 
 from PyQt4 import QtGui
 
-
 from home import HomeViewWidget
+from menubar import MenuBar
 
 
 class MainWindow(QtGui.QMainWindow):
@@ -18,6 +18,9 @@ class MainWindow(QtGui.QMainWindow):
         self.setWindowIcon(QtGui.QIcon('images/logo.png'))
 
         self.change_context(HomeViewWidget)
+
+        self.menubar = MenuBar(self)
+        self.setMenuBar(self.menubar)
 
     def change_context(self, context_widget, *args, **kwargs):
 

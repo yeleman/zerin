@@ -26,24 +26,30 @@ class MenuBar(QtGui.QMenuBar, F_Widget):
 
         #Menu Aide
         help_ = self.addMenu(u"Aide")
-        help_.addAction(QtGui.QIcon('images/help.png', "Aide"),
+        help_.addAction(QtGui.QIcon('images/help.png'), "Aide",
                                     self.goto_help)
-        help_.addAction(QtGui.QIcon('images/info.png', u"A poropos"),
+        help_.addAction(QtGui.QIcon('images/info.png'), u"A poropos",
                                     self.goto_about)
 
+    #Aide
+    def goto_help(self):
+        QtGui.QMessageBox.about(self, u"Aide",
+                                u"<h3>Désolé je ne peux rien pour toi</h3>")
     #About
     def goto_about(self):
         from model import VERSION
         QtGui.QMessageBox.about(self, u"À propos",
-                                u"<h1>ZERIN  %s </h1>"
-                                u"<ul><b><li>Logiciel d'envoi de zerin</li>"
-                                    u"<li>© 2012 yɛlɛman s.à.r.l</li>"
-                                    u"<li><b>Hippodrome, Avenue Al Quds, BPE. 3713 - Bamako (Mali)</b></li>"
+                                u"<h2>ZERIN </h2> <b> Version: </b>%s <br/>"
+                                u"<i>Logiciel de gestion pour les vendeurs de zerin (ex. cyber café)</i><br/>"
+                                u"<h2>© 2012 yɛlɛman s.à.r.l</h2>"
+                                u"<ul>"
+                                    u"<li>Hippodrome, Avenue Al Quds, BPE. 3713 - Bamako (Mali)</li>"
                                     u"<li><b>Tel:</b> (223) 76 33 30 05</li>"
                                     u"<li><b>Tel:</b> (223) </li>"
                                     u"<li><b>E-mail:</b>info@yeleman.com</li>"
-                                    u"<ul><b>Developpeur:</b>"
-                                         u"<li>Renaud Gaudin</li>"
+                                    u"<li><b>Site:</b> www.yeleman.com<li>"
+                                    u"<li><b>Developpeurs:</b></li>"
+                                         u"<ul><li>Renaud Gaudin</li>"
                                          u"<li>Ibrahima Fadiga</li>"
                                          u"<li>Alou Dolo</li> </ul>"
-                                    u"<b>Site:</b> www.yeleman.com<br/></ul>" % VERSION)
+                                u"</ul>" % VERSION)

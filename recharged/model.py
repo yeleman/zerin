@@ -9,7 +9,7 @@ from datetime import datetime
 
 
 DB_FILE = "zerin.db"
-VERSION = "V.0.1b"
+VERSION = "0.0.1b"
 dbh = peewee.SqliteDatabase(DB_FILE)
 
 
@@ -24,7 +24,7 @@ class BaseModel(peewee.Model):
 
 
 class Owner(BaseModel):
-    """ 
+    """
     """
 
     username = peewee.CharField(max_length=30, verbose_name="Nom d'utilisateur",
