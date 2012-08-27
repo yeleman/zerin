@@ -4,10 +4,10 @@
 
 from PySide import QtGui, QtCore
 
-from common import F_Widget
+from common import ZWidget
 
 
-class MenuBar(QtGui.QMenuBar, F_Widget):
+class MenuBar(QtGui.QMenuBar, ZWidget):
 
     def __init__(self, parent=None, *args, **kwargs):
         QtGui.QMenuBar.__init__(self, parent=parent, *args, **kwargs)
@@ -31,10 +31,18 @@ class MenuBar(QtGui.QMenuBar, F_Widget):
         help_.addAction(QtGui.QIcon('images/info.png'), u"À propos",
                                     self.goto_about)
 
+        settings = self.addMenu(u"Option")
+        settings.addAction(QtGui.QIcon('images/help.png'), "Option",
+                                    self.goto_settings)
+
+        adressbook = self.addMenu(u"Carnet d'adresse")
+
+
     #Aide
     def goto_help(self):
         QtGui.QMessageBox.about(self, u"Aide",
                                 u"<h3>Désolé je ne peux rien pour toi</h3>")
+
     #About
     def goto_about(self):
         QtGui.QMessageBox.about(self, u"À propos",
@@ -51,3 +59,8 @@ class MenuBar(QtGui.QMenuBar, F_Widget):
                                          u"<li>Ibrahima Fadiga</li>"
                                          u"<li>Alou Dolo</li> </ul>"
                                 u"</ul>")
+
+    #Aide
+    def goto_settings(self):
+        QtGui.QMessageBox.about(self, u"Aide",
+                                u"<h3>Désolé je ne peux rien pour toi</h3>")
