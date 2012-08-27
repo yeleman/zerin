@@ -2,7 +2,8 @@
 # encoding=utf-8
 # Autor: Fadiga
 
-from model import  PhoneNumber, GroupContact, Contact
+from model import  (GroupContact, Operator, PhoneNumber, AddressBook, Transfer,
+                    Settings)
 
 
 def setup(drop_tables=False):
@@ -10,7 +11,8 @@ def setup(drop_tables=False):
 
     did_create = False
 
-    for model in [GroupContact, PhoneNumber, Contact]:
+    for model in [GroupContact, Operator, PhoneNumber, AddressBook, Transfer,
+                    Settings]:
         if drop_tables:
             model.drop_table()
         if not model.table_exists():
