@@ -15,7 +15,6 @@ class HomeViewWidget(F_Widget):
                                                         *args, **kwargs)
         self.parent = parent
         self.parentWidget().setWindowTitle(u"Bienvenu sur Zerin")
-        blanck = 10 * " "
         self.title = F_PageTitle(u"MENU GENERAL")
 
         pixmap = QtGui.QPixmap("images/logo.jpg")
@@ -27,14 +26,7 @@ class HomeViewWidget(F_Widget):
         formbox.setSizeConstraint(QtGui.QLayout.SetFixedSize)
         editbox = QtGui.QGridLayout()
         vbox.addWidget(self.title)
+        editbox.addWidget(label, 0, 0, 0, 0)
 
-        self.vline = QtGui.QFrame()
-        self.vline.setFrameShape(QtGui.QFrame.VLine)
-        self.vline.setFrameShadow(QtGui.QFrame.Sunken)
-        editbox.addWidget(label, 1, 1, 1, 1)
-
-        formbox.addLayout(editbox)
-        vbox.addLayout(formbox)
-
-        self.permission = [u"admin", u"superuser"]
+        vbox.addLayout(editbox)
         self.setLayout(vbox)

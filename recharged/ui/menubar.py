@@ -37,9 +37,8 @@ class MenuBar(QtGui.QMenuBar, F_Widget):
                                 u"<h3>Désolé je ne peux rien pour toi</h3>")
     #About
     def goto_about(self):
-        from model import VERSION
         QtGui.QMessageBox.about(self, u"À propos",
-                                u"<h2>PACH TECH </h2> <b> Version: </b>%s <br/>"
+                                u"<h2>PACH TECH </h2><br/>"
                                 u"<i>Logiciel de gestion pour les vendeurs de nsɛrɛ et paani (ex. cyber café)</i><br/>"
                                 u"<h2>© 2012 yɛlɛman s.à.r.l</h2>"
                                 u"<ul>"
@@ -51,4 +50,4 @@ class MenuBar(QtGui.QMenuBar, F_Widget):
                                          u"<ul><li>Renaud Gaudin</li>"
                                          u"<li>Ibrahima Fadiga</li>"
                                          u"<li>Alou Dolo</li> </ul>"
-                                u"</ul>" % VERSION)
+                                u"</ul>")

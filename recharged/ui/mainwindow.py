@@ -14,7 +14,7 @@ class MainWindow(QtGui.QMainWindow):
         QtGui.QMainWindow.__init__(self)
 
         self.resize(1200, 600)
-        self.setWindowTitle(u"GE.DOUG")
+        self.setWindowTitle(u"Zerin")
         self.setWindowIcon(QtGui.QIcon('images/logo.png'))
 
         self.change_context(HomeViewWidget)
