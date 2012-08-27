@@ -33,6 +33,6 @@ class F_PageTitle(QtGui.QLabel):
         super(F_PageTitle, self).__init__(*args, **kwargs)
 
         self.setAlignment(QtCore.Qt.AlignCenter)
-        # self.setStyleSheet("color: bleu; font: 20 10pt"
-        #                    " \"Tlwg Typist\" ; border:1px solid bleu;\
-        #                    border-radius: 14px 14px 4px 4px;font-variant: small-caps;")
+        self.setStyleSheet("color: bleu; font: 20 10pt"
+                           " \"Tlwg Typist\" ; border:1px solid bleu;\
+                           border-radius: 14px 14px 4px 4px;font-variant: small-caps;")

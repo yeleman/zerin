@@ -14,7 +14,7 @@ class HomeViewWidget(F_Widget):
         super(HomeViewWidget, self).__init__(parent=parent,
                                                         *args, **kwargs)
         self.parent = parent
-        self.parentWidget().setWindowTitle(u"Bienvenu sur Zerin")
+        self.parentWidget().setWindowTitle(u"Bienvenue sur Zerin")
         self.title = F_PageTitle(u"MENU GENERAL")
 
         pixmap = QtGui.QPixmap("images/logo.jpg")

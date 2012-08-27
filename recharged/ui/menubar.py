@@ -5,7 +5,7 @@
 from PySide import QtGui, QtCore
 
 from common import F_Widget
-
+from help import HTMLEditor
 
 class MenuBar(QtGui.QMenuBar, F_Widget):
 
@@ -33,8 +33,8 @@ class MenuBar(QtGui.QMenuBar, F_Widget):
 
     #Aide
     def goto_help(self):
-        QtGui.QMessageBox.about(self, u"Aide",
-                                u"<h3>Désolé je ne peux rien pour toi</h3>")
+
+        self.open_dialog(HTMLEditor, modal=True)
     #About
     def goto_about(self):
         QtGui.QMessageBox.about(self, u"À propos",
