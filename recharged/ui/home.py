@@ -5,7 +5,7 @@
 from PySide import QtGui
 from datetime import datetime
 from common import ZWidget, ZPageTitle, ZTableWidget
-from database import Transfer, AddressBook, PhoneNumber
+from database import Transfer, AddressBook
 
 
 class HomeViewWidget(ZWidget):
