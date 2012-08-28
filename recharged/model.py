@@ -60,10 +60,11 @@ class AddressBook(BaseModel):
 
 class Transfer(BaseModel):
     """ Ensemble des  transferts effectués """
+
     amount = peewee.IntegerField(verbose_name=u"Montant")
-    contact = peewee.ForeignKeyField(PhoneNumber, verbose_name=u"Telephone",
+    contact = peewee.ForeignKeyField(AddressBook, verbose_name=u"Telephone",
                                      blank=True, null=True)
-    date = peewee.DateTimeField(PhoneNumber, verbose_name=u"Date")
+    date = peewee.DateTimeField(verbose_name=u"Date")
     number = peewee.IntegerField(verbose_name=u"Telephone",
                                      blank=True, null=True)
 

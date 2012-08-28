@@ -34,10 +34,28 @@ class MenuBar(QtGui.QMenuBar, ZWidget):
         settings = self.addMenu(u"Option")
         settings.addAction(QtGui.QIcon('images/help.png'), "Option",
                                     self.goto_settings)
-
+        # adressbook
         adressbook = self.addMenu(u"Carnet d'adresse")
+        adressbook.addAction(QtGui.QIcon('images/help.png'), "Ajouter contact",
+                                    self.goto_add_contact)
+        adressbook.addAction(QtGui.QIcon('images/help.png'), "Recherher contact",
+                                    self.goto_search_contact)
+        adressbook.addAction(QtGui.QIcon('images/help.png'), "Supprimer contact",
+                                    self.goto_delete_contact)
 
 
+    #Add contact
+    def goto_add_contact(self):
+        QtGui.QMessageBox.about(self, u"Ajouter",
+                                u"<h3>Pour ajouter un contact</h3>")
+    #Search contact
+    def goto_search_contact(self):
+        QtGui.QMessageBox.about(self, u"Recherher",
+                                u"<h3>Pour chercher un contact</h3>")
+    #Delete contact
+    def goto_delete_contact(self):
+        QtGui.QMessageBox.about(self, u"Supprimer",
+                                u"<h3>Pour supprimer un contact</h3>")
     #Aide
     def goto_help(self):
         QtGui.QMessageBox.about(self, u"Aide",
@@ -62,5 +80,5 @@ class MenuBar(QtGui.QMenuBar, ZWidget):
 
     #Aide
     def goto_settings(self):
-        QtGui.QMessageBox.about(self, u"Aide",
-                                u"<h3>Désolé je ne peux rien pour toi</h3>")
+        QtGui.QMessageBox.about(self, u"Option",
+                                u"<h3>Settings</h3>")
