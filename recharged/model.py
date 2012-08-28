@@ -74,7 +74,11 @@ class Transfer(BaseModel):
 
     def sender(self):
         """ choix du destinateur """
-        pass
+        sender = self.number
+        if self.contact:
+            sender = self.contact
+
+        return sender
 
 
 class Settings(BaseModel):

@@ -20,42 +20,42 @@ class MenuBar(QtGui.QMenuBar, ZWidget):
         # Exit
         exit_ = QtGui.QAction(u"Exit", self)
         exit_.setShortcut("Ctrl+Q")
-        exit_.setToolTip("Quiter l'application")
+        exit_.setToolTip("Exit application")
         self.connect(exit_, QtCore.SIGNAL("triggered()"), self.parentWidget(),
                                           QtCore.SLOT("close()"))
         file_.addAction(exit_)
 
         #Menu Aide
-        help_ = self.addMenu(u"Aide")
-        help_.addAction(QtGui.QIcon('images/help.png'), "Aide",
+        help_ = self.addMenu(u"Help")
+        help_.addAction(QtGui.QIcon('images/help.png'), "Help",
                                     self.goto_help)
-        help_.addAction(QtGui.QIcon('images/info.png'), u"À propos",
+        help_.addAction(QtGui.QIcon('images/info.png'), u"About",
                                     self.goto_about)
 
         settings = self.addMenu(u"Option")
         settings.addAction(QtGui.QIcon('images/help.png'), "Option",
                                     self.goto_settings)
         # adressbook
-        adressbook = self.addMenu(u"Carnet d'adresse")
-        adressbook.addAction(QtGui.QIcon('images/help.png'), "Ajouter contact",
+        adressbook = self.addMenu(u"dressbook")
+        adressbook.addAction(QtGui.QIcon('images/help.png'), "add contact",
                                     self.goto_add_contact)
-        adressbook.addAction(QtGui.QIcon('images/help.png'), "Recherher contact",
+        adressbook.addAction(QtGui.QIcon('images/help.png'), "Search contact",
                                     self.goto_search_contact)
-        adressbook.addAction(QtGui.QIcon('images/help.png'), "Supprimer contact",
+        adressbook.addAction(QtGui.QIcon('images/help.png'), "Delete contact",
                                     self.goto_delete_contact)
 
 
     #Add contact
     def goto_add_contact(self):
-        QtGui.QMessageBox.about(self, u"Ajouter",
+        QtGui.QMessageBox.about(self, u"Add",
                                 u"<h3>Pour ajouter un contact</h3>")
     #Search contact
     def goto_search_contact(self):
-        QtGui.QMessageBox.about(self, u"Recherher",
+        QtGui.QMessageBox.about(self, u"Search",
                                 u"<h3>Pour chercher un contact</h3>")
     #Delete contact
     def goto_delete_contact(self):
-        QtGui.QMessageBox.about(self, u"Supprimer",
+        QtGui.QMessageBox.about(self, u"Delete",
                                 u"<h3>Pour supprimer un contact</h3>")
 
     #Settings
