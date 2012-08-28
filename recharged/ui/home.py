@@ -41,6 +41,7 @@ class HomeViewWidget(ZWidget):
 
         vbox = QtGui.QVBoxLayout()
         formbox.setSizeConstraint(QtGui.QLayout.SetFixedSize)
+
         vbox.addWidget(self.title)
 
         vbox.addLayout(formbox)

@@ -5,6 +5,7 @@
 from PySide import QtGui, QtCore
 
 from common import ZWidget
+from help import HTMLEditor
 
 
 class MenuBar(QtGui.QMenuBar, ZWidget):
@@ -56,11 +57,16 @@ class MenuBar(QtGui.QMenuBar, ZWidget):
     def goto_delete_contact(self):
         QtGui.QMessageBox.about(self, u"Supprimer",
                                 u"<h3>Pour supprimer un contact</h3>")
+
+    #Settings
+    def goto_settings(self):
+        QtGui.QMessageBox.about(self, u"Option",
+                                u"<h3>Settings</h3>")
+
     #Aide
     def goto_help(self):
-        QtGui.QMessageBox.about(self, u"Aide",
-                                u"<h3>Désolé je ne peux rien pour toi</h3>")
 
+        self.open_dialog(HTMLEditor, modal=True)
     #About
     def goto_about(self):
         QtGui.QMessageBox.about(self, u"À propos",
@@ -77,8 +83,3 @@ class MenuBar(QtGui.QMenuBar, ZWidget):
                                          u"<li>Ibrahima Fadiga</li>"
                                          u"<li>Alou Dolo</li> </ul>"
                                 u"</ul>")
-
-    #Aide
-    def goto_settings(self):
-        QtGui.QMessageBox.about(self, u"Option",
-                                u"<h3>Settings</h3>")
