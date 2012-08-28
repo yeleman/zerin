@@ -4,10 +4,10 @@
 
 from PySide import QtGui, QtCore
 
-from common import F_Widget
+from common import Z_Widget
 from help import HTMLEditor
 
-class MenuBar(QtGui.QMenuBar, F_Widget):
+class MenuBar(QtGui.QMenuBar, Z_Widget):
 
     def __init__(self, parent=None, *args, **kwargs):
         QtGui.QMenuBar.__init__(self, parent=parent, *args, **kwargs)

@@ -4,10 +4,10 @@
 
 from PySide import QtGui
 
-from common import F_Widget, F_PageTitle
+from common import Z_Widget, Z_PageTitle
 
 
-class HomeViewWidget(F_Widget):
+class HomeViewWidget(Z_Widget):
     """ Shows the home page  """
 
     def __init__(self, parent=0, *args, **kwargs):
@@ -15,7 +15,7 @@ class HomeViewWidget(F_Widget):
                                                         *args, **kwargs)
         self.parent = parent
         self.parentWidget().setWindowTitle(u"Bienvenue sur Zerin")
-        self.title = F_PageTitle(u"MENU GENERAL")
+        self.title = Z_PageTitle(u"MENU GENERAL")
 
         pixmap = QtGui.QPixmap("images/logo.jpg")
         label = QtGui.QLabel(self)
