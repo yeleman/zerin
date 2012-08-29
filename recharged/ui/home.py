@@ -88,7 +88,7 @@ class OperationTableWidget(ZTableWidget):
         self.refresh(True)
 
     def set_data_for(self):
-        self._data = [(operation.amount, operation.sender(),\
+        self._data = [(operation.amount, operation.full_name(),\
                       operation.date.strftime(u'%d-%m-%Y')) \
                       for operation in Transfer.select()]
 

@@ -80,6 +80,13 @@ class Transfer(BaseModel):
 
         return sender
 
+    def full_name(self):
+        """ choix du destinateur """
+
+        if self.contact:
+            return "%s/%s" % (self.contact.name, self.contact)
+        return self.number
+
 
 class Settings(BaseModel):
     password = peewee.CharField(max_length=30, verbose_name=(u"Nom"))
