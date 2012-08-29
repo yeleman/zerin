@@ -5,7 +5,7 @@
 from PySide import QtGui
 
 from home import HomeViewWidget
-from menubar import MenuBar
+from menubar import MenuBarTransfer
 
 
 class MainWindow(QtGui.QMainWindow):
@@ -19,7 +19,7 @@ class MainWindow(QtGui.QMainWindow):
 
         self.change_context(HomeViewWidget)
 
-        self.menubar = MenuBar(self)
+        self.menubar = MenuBarTransfer(self)
         self.setMenuBar(self.menubar)
 
     def change_context(self, context_widget, *args, **kwargs):

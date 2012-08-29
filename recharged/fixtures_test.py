@@ -3,14 +3,14 @@
 #maintainer : alou
 
 from datetime import datetime
-from model import  GroupContact, Operator, PhoneNumber, AddressBook, Transfer
+from model import  ContactGroup, Operator, PhoneNumber, Contact, Transfer
 
 list_ = []
-group1 = GroupContact(name=u"LIONS").save()
-group2 = GroupContact(name=u"LEO").save()
+group1 = ContactGroup(name=u"LIONS").save()
+group2 = ContactGroup(name=u"LEO").save()
 
-group1 = GroupContact.get(id=1)
-group2 = GroupContact.get(id=2)
+group1 = ContactGroup.get(id=1)
+group2 = ContactGroup.get(id=2)
 
 operator_o = Operator(id_='orange', name='Orange').save()
 operator_m = Operator(id_='malitel', name='Malitel').save()
@@ -24,11 +24,11 @@ phone_m = PhoneNumber(number=69500451, operator=operator_m).save()
 phone_o = PhoneNumber.get(id=1)
 phone_m = PhoneNumber.get(id=2)
 
-contact1 = AddressBook(name='alou', phone=phone_o, group=group1).save()
-contact2 = AddressBook(name='fad', phone=phone_m, group=group2).save()
+contact1 = Contact(name='alou', phone=phone_o, group=group1).save()
+contact2 = Contact(name='fad', phone=phone_m, group=group2).save()
 
-contact1 = AddressBook.get(id=1)
-contact2 = AddressBook.get(id=2)
+contact1 = Contact.get(id=1)
+contact2 = Contact.get(id=2)
 
 date1 = datetime(int(2012), int(11), int(21))
 date2 = datetime(int(2012), int(1), int(21))

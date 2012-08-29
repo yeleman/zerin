@@ -8,7 +8,7 @@ from common import ZWidget
 from help import HTMLEditor
 
 
-class MenuBar(QtGui.QMenuBar, ZWidget):
+class MenuBarTransfer(QtGui.QMenuBar, ZWidget):
 
     def __init__(self, parent=None, *args, **kwargs):
         QtGui.QMenuBar.__init__(self, parent=parent, *args, **kwargs)
@@ -18,49 +18,56 @@ class MenuBar(QtGui.QMenuBar, ZWidget):
         file_ = self.addMenu(u"&Fichier")
 
         # Exit
-        exit_ = QtGui.QAction(u"Exit", self)
-        exit_.setShortcut("Ctrl+Q")
-        exit_.setToolTip("Exit application")
-        self.connect(exit_, QtCore.SIGNAL("triggered()"), self.parentWidget(),
+        menu_exit = QtGui.QAction(u"Quitter", self)
+        menu_exit.setShortcut("Ctrl+Q")
+        menu_exit.setToolTip("Quitter l'application")
+        self.connect(menu_exit, QtCore.SIGNAL("triggered()"), self.parentWidget(),
                                           QtCore.SLOT("close()"))
-        file_.addAction(exit_)
+        file_.addAction(menu_exit)
 
-        #Menu Aide
-        help_ = self.addMenu(u"Help")
-        help_.addAction(QtGui.QIcon('images/help.png'), "Help",
+        # Menu Aide
+        menu_help = self.addMenu(u"Aide")
+        menu_help.addAction(QtGui.QIcon('images/help.png'), "Aide",
                                     self.goto_help)
-        help_.addAction(QtGui.QIcon('images/info.png'), u"About",
+        menu_help.addAction(QtGui.QIcon('images/info.png'), u"À propos",
                                     self.goto_about)
 
-        settings = self.addMenu(u"Option")
-        settings.addAction(QtGui.QIcon('images/help.png'), "Option",
+        # Menu Options
+        menu_settings = self.addMenu(u"Options")
+        menu_settings.addAction(QtGui.QIcon('images/help.png'), u"Options",
                                     self.goto_settings)
-        # adressbook
-        adressbook = self.addMenu(u"dressbook")
-        adressbook.addAction(QtGui.QIcon('images/help.png'), "add contact",
+        # Menu adressbook
+        #   => add contact
+        #   => search contact
+        #   => delete contact
+        menu_adressbook = self.addMenu(u"Carnet d'adresse")
+        menu_adressbook.addAction(QtGui.QIcon('images/help.png'),
+                                         u"Ajouter contact",
                                     self.goto_add_contact)
-        adressbook.addAction(QtGui.QIcon('images/help.png'), "Search contact",
+        menu_adressbook.addAction(QtGui.QIcon('images/help.png'),
+                                         u"Chercher contact",
                                     self.goto_search_contact)
-        adressbook.addAction(QtGui.QIcon('images/help.png'), "Delete contact",
+        menu_adressbook.addAction(QtGui.QIcon('images/help.png'),
+                                        u"Supprimer contact",
                                     self.goto_delete_contact)
 
 
     #Add contact
     def goto_add_contact(self):
-        QtGui.QMessageBox.about(self, u"Add",
+        QtGui.QMessageBox.about(self, u"Ajouter contact",
                                 u"<h3>Pour ajouter un contact</h3>")
     #Search contact
     def goto_search_contact(self):
-        QtGui.QMessageBox.about(self, u"Search",
+        QtGui.QMessageBox.about(self, u"Recherche contact",
                                 u"<h3>Pour chercher un contact</h3>")
     #Delete contact
     def goto_delete_contact(self):
-        QtGui.QMessageBox.about(self, u"Delete",
+        QtGui.QMessageBox.about(self, u"Supprimer contact",
                                 u"<h3>Pour supprimer un contact</h3>")
 
     #Settings
     def goto_settings(self):
-        QtGui.QMessageBox.about(self, u"Option",
+        QtGui.QMessageBox.about(self, u"Options",
                                 u"<h3>Settings</h3>")
 
     #Aide

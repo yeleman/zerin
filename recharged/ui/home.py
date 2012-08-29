@@ -5,7 +5,7 @@
 from PySide import QtGui
 from datetime import datetime
 from common import ZWidget, ZPageTitle, ZTableWidget
-from database import Transfer, AddressBook
+from database import Transfer, Contact
 
 
 class HomeViewWidget(ZWidget):
@@ -21,7 +21,7 @@ class HomeViewWidget(ZWidget):
 
         self.parent = parent
         self.parentWidget().setWindowTitle(u"Bienvenu sur Zerin")
-        self.title = ZPageTitle(u"Tranfer credit")
+        self.title = ZPageTitle(u"Tranfert credit")
         self.order_number = QtGui.QLineEdit()
 
         # form transfer
@@ -34,8 +34,8 @@ class HomeViewWidget(ZWidget):
 
 
         formbox = QtGui.QGridLayout()
-        formbox.addWidget(QtGui.QLabel((u'Number')), 0, 0)
-        formbox.addWidget(QtGui.QLabel((u'Amount')), 0, 1)
+        formbox.addWidget(QtGui.QLabel((u'Numero')), 0, 0)
+        formbox.addWidget(QtGui.QLabel((u'Montant')), 0, 1)
         formbox.addWidget(self.number, 1, 0, 1, 2)
         formbox.addWidget(self.amount, 1, 1, 1, 2)
         formbox.addWidget(butt, 1, 2, 1, 2)
@@ -55,7 +55,7 @@ class HomeViewWidget(ZWidget):
         ''' add operation '''
 
         number = self.number.text()
-        for adressbook in AddressBook.all():
+        for adressbook in Contact.all():
             number = self.number.text()
             contact = None
             if adressbook.phone.number == int(self.number.text()):
@@ -65,7 +65,8 @@ class HomeViewWidget(ZWidget):
 
         date_ = datetime.now()
 
-        transfer = Transfer(amount=self.amount.text(), contact=contact, date=date_, number=number)
+        transfer = Transfer(amount=self.amount.text(), contact=contact,
+                            date=date_, number=number)
 
         transfer.save()
         self.table.refresh_()
@@ -76,8 +77,8 @@ class OperationTableWidget(ZTableWidget):
     def __init__(self, parent, *args, **kwargs):
 
         ZTableWidget.__init__(self, parent=parent, *args, **kwargs)
-        self.header = [(u'Amount'), (u'Contact'), \
-                       (u'Date')]
+        self.header = [(u'Contact'), (u'Montant'), \
+                       (u'Heure')]
 
         self.set_data_for()
         self.refresh(True)
