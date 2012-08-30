@@ -4,4 +4,4 @@
 
 
 from mainwindow import MainWindow
-from menubar import MenuBar
+from menubar import MenuBarTransfer

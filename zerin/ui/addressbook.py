@@ -4,16 +4,16 @@
 
 from PySide import QtGui, QtCore
 
-from model import GroupContact, AddressBook
+from models import Contact
 
 from common import ZWidget, ZBoxTitle, ZTableWidget, Button
 
 
-class AddressBookViewWidget(ZWidget):
+class ContactViewWidget(ZWidget):
     """ Shows the home page  """
 
     def __init__(self, parent=0, *args, **kwargs):
-        super(AddressBookViewWidget, self).__init__(parent=parent,
+        super(ContactViewWidget, self).__init__(parent=parent,
                                                         *args, **kwargs)
         self.parent = parent
         self.parentWidget().setWindowTitle(u"Carnet d'adresse")
@@ -120,7 +120,7 @@ class ContactTableWidget(ZTableWidget):
                                                                data, context)
 
     def click_item(self, row, column, *args):
-        # self.choix = AddressBook.filter(phone__number=self.data[row][1]).get()
+        # self.choix = Contact.filter(phone__number=self.data[row][1]).get()
         if column == 0:
             self.parent.table_info.refresh_(self.data[row][1])
             self.parent.table_transf.refresh_(self.data[row][1])
@@ -146,7 +146,7 @@ class GroupTableWidget(QtGui.QTreeWidget):
 
         h = QtGui.QTreeWidgetItem(self)
         h.setText(0, "Tous")
-        items = [["Groupes", [gr.name for gr in GroupContact.all()]]]
+        items = [["Groupes", [gr.name for gr in Contact.all()]]]
         for item in items:
             p = QtGui.QTreeWidgetItem(self)
             # p.setIcon(0, QtGui.QIcon('images/group.png'))

@@ -5,8 +5,8 @@
 from PySide import QtGui
 
 from home import HomeViewWidget
-from addressbook import AddressBookViewWidget
-from menubar import MenuBar
+from addressbook import ContactViewWidget
+from menubar import MenuBarTransfer
 
 
 class MainWindow(QtGui.QMainWindow):
@@ -18,10 +18,10 @@ class MainWindow(QtGui.QMainWindow):
         self.setWindowTitle(u"Zerin")
         self.setWindowIcon(QtGui.QIcon('images/logo.png'))
 
-        # self.change_context(HomeViewWidget)
-        self.change_context(AddressBookViewWidget)
+        self.change_context(HomeViewWidget)
+        # self.change_context(ContactViewWidget)
 
-        self.menubar = MenuBar(self)
+        self.menubar = MenuBarTransfer(self)
         self.setMenuBar(self.menubar)
 
     def change_context(self, context_widget, *args, **kwargs):

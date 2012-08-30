@@ -19,7 +19,7 @@ class BaseModel(peewee.Model):
         return list(cls.select())
 
 
-class GroupContact(BaseModel):
+class Group(BaseModel):
     """ Group of contacts"""
 
     name = peewee.CharField(max_length=30, verbose_name=u"Nom")
@@ -30,40 +30,52 @@ class GroupContact(BaseModel):
 
 class Operator(BaseModel):
     """ Operators """
-    id_ = peewee.CharField(max_length=30, verbose_name=u"ID")
+    slug = peewee.CharField(max_length=30, verbose_name=u"Code")
     name = peewee.CharField(max_length=30, verbose_name=u"Nom")
 
     def __unicode__(self):
-        return u"%(name)s/%(id_)s" % {"name": self.name, "id_": self.id_}
+        return u"%(name)s" % {"name": self.name}
 
 
 class PhoneNumber(BaseModel):
     """ Contact number """
 
     number = peewee.IntegerField(verbose_name=u"Numero de téléphone")
-    operator = peewee.ForeignKeyField(Operator, verbose_name=u"Operateur")
+    operator = peewee.ForeignKeyField(Operator, verbose_name=u"Opérateur",
+                                      related_name='operators')
 
     def __unicode__(self):
         return u"%(number)s" % {u"number": self.number}
 
 
-class AddressBook(BaseModel):
-    """ Address book """
+class Contact(BaseModel):
+    """ Contact address book """
 
-    name = peewee.CharField(max_length=30, verbose_name=(u"Nom"), unique=True)
-    phone = peewee.ForeignKeyField(PhoneNumber, verbose_name=u"Telephone")
-    group = peewee.ForeignKeyField(GroupContact, verbose_name=u"Groupes")
+    name = peewee.CharField(max_length=100, verbose_name=(u"Nom"), unique=True)
+    phone = peewee.ForeignKeyField(PhoneNumber, verbose_name=u"Téléphone",
+                                   related_name='phones')
 
     def __unicode__(self):
         return u"%(name)s" % {"name": self.name}
 
 
+class ContactGroup(BaseModel):
+    """ """
+    contact = peewee.ForeignKeyField(Contact, verbose_name=u"Contact",
+                                   related_name='contacts')
+    group = peewee.ForeignKeyField(Group, verbose_name=u"Groupe",
+                                   related_name='groups')
+
+
 class Transfer(BaseModel):
     """ Ensemble des  transferts effectués """
+
     amount = peewee.IntegerField(verbose_name=u"Montant")
-    contact = peewee.ForeignKeyField(PhoneNumber, verbose_name=u"Telephone",
+    contact = peewee.ForeignKeyField(Contact, verbose_name=u"Téléphone",
+                                     related_name='contacts',
                                      blank=True, null=True)
-    date = peewee.DateTimeField(PhoneNumber, verbose_name=u"Date")
+    date = peewee.DateTimeField(verbose_name=u"Date")
+
     number = peewee.IntegerField(verbose_name=u"Telephone",
                                      blank=True, null=True)
 
@@ -73,7 +85,18 @@ class Transfer(BaseModel):
 
     def sender(self):
         """ choix du destinateur """
-        pass
+        sender = self.number
+        if self.contact:
+            sender = self.contact
+
+        return sender
+
+    def full_name(self):
+        """ choix du destinateur """
+
+        if self.contact:
+            return "%s/%s" % (self.contact.name, self.contact)
+        return self.number
 
 
 class Settings(BaseModel):
