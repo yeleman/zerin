@@ -3,17 +3,17 @@
 #maintainer : alou
 
 from datetime import datetime
-from model import  ContactGroup, Operator, PhoneNumber, Contact, Transfer
+from model import  Group, Operator, PhoneNumber, Contact, ContactGroup, Transfer
 
 list_ = []
-group1 = ContactGroup(name=u"LIONS").save()
-group2 = ContactGroup(name=u"LEO").save()
+group1 = Group(name=u"LIONS").save()
+group2 = Group(name=u"LEO").save()
 
-group1 = ContactGroup.get(id=1)
-group2 = ContactGroup.get(id=2)
+group1 = Group.get(id=1)
+group2 = Group.get(id=2)
 
-operator_o = Operator(id_='orange', name='Orange').save()
-operator_m = Operator(id_='malitel', name='Malitel').save()
+operator_o = Operator(slug='orange', name='Orange').save()
+operator_m = Operator(slug='malitel', name='Malitel').save()
 
 operator_o = Operator.get(id=1)
 operator_m = Operator.get(id=2)
@@ -30,6 +30,11 @@ contact2 = Contact(name='fad', phone=phone_m, group=group2).save()
 contact1 = Contact.get(id=1)
 contact2 = Contact.get(id=2)
 
+contactgropup1 = ContactGroup(contact=contact1, group=group1).save()
+contactgropup2 = ContactGroup(contact=contact1, group=group1).save()
+
+contactgropup1 = ContactGroup.get(id=1)
+contactgropup2 = ContactGroup.get(id=2)
 date1 = datetime(int(2012), int(11), int(21))
 date2 = datetime(int(2012), int(1), int(21))
 

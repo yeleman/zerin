@@ -19,9 +19,8 @@ class BaseModel(peewee.Model):
         return list(cls.select())
 
 
-class ContactGroup(BaseModel):
+class Group(BaseModel):
     """ Group of contacts"""
-
     name = peewee.CharField(max_length=30, verbose_name=u"Nom")
 
     def __unicode__(self):
@@ -57,6 +56,14 @@ class Contact(BaseModel):
 
     def __unicode__(self):
         return u"%(name)s" % {"name": self.name}
+
+
+class ContactGroup(BaseModel):
+    """ """
+    contact = peewee.ForeignKeyField(Contact, verbose_name=u"Contact",
+                                   related_name='contacts')
+    group = peewee.ForeignKeyField(Group, verbose_name=u"Groupe",
+                                   related_name='groups')
 
 
 class Transfer(BaseModel):
