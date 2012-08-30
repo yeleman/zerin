@@ -1,4 +1,4 @@
 
 
-class F_Window(object):
+class Z_Window(object):
     window = None

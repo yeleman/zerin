@@ -7,6 +7,9 @@ from PySide import QtGui, QtCore
 import PySide.QtWebKit
 
 
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+
+
 class HTMLEditor(QtGui.QDialog):
 
     def __init__(self, parent = None):
@@ -14,8 +17,6 @@ class HTMLEditor(QtGui.QDialog):
 
         self.setWindowTitle(u"Aide")
         view = PySide.QtWebKit.QWebView(parent)
-
-        ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 
         view.load(QtCore.QUrl("file://%s" % os.path.join(ROOT_DIR, 'help.html')))
         layout = QtGui.QVBoxLayout(self)

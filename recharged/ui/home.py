@@ -4,29 +4,76 @@
 
 from PySide import QtGui
 
-from common import Z_Widget, Z_PageTitle
+from common import ZWidget, ZPageTitle, ZTableWidget
 
 
-class HomeViewWidget(Z_Widget):
+class HomeViewWidget(ZWidget):
     """ Shows the home page  """
 
     def __init__(self, parent=0, *args, **kwargs):
         super(HomeViewWidget, self).__init__(parent=parent,
                                                         *args, **kwargs)
+
+        self.table = OperationTableWidget(parent=self)
+        hbox = QtGui.QHBoxLayout()
+        hbox.addWidget(self.table)
+
         self.parent = parent
-        self.parentWidget().setWindowTitle(u"Bienvenue sur Zerin")
-        self.title = Z_PageTitle(u"MENU GENERAL")
+        self.parentWidget().setWindowTitle(u"Bienvenu sur Zerin")
+        self.title = ZPageTitle(u"Tranfert credit")
+        self.order_number = QtGui.QLineEdit()
 
-        pixmap = QtGui.QPixmap("images/logo.jpg")
-        label = QtGui.QLabel(self)
-        label.setPixmap(pixmap)
+        # form transfer
+        self.number = QtGui.QLineEdit()
+        self.amount = QtGui.QLineEdit()
+        self.amount.setValidator(QtGui.QIntValidator())
+        butt = QtGui.QPushButton((u"OK"))
+        butt.clicked.connect(self.add_operation)
 
-        vbox = QtGui.QHBoxLayout()
-        formbox = QtGui.QHBoxLayout()
+
+        formbox = QtGui.QGridLayout()
+        formbox.addWidget(QtGui.QLabel((u'number')), 0, 0)
+        formbox.addWidget(QtGui.QLabel((u'Montant')), 0, 1)
+        formbox.addWidget(self.number, 1, 0, 1, 2)
+        formbox.addWidget(self.amount, 1, 1, 1, 2)
+        formbox.addWidget(butt, 1, 2, 1, 2)
+
+        vbox = QtGui.QVBoxLayout()
         formbox.setSizeConstraint(QtGui.QLayout.SetFixedSize)
-        editbox = QtGui.QGridLayout()
-        vbox.addWidget(self.title)
-        editbox.addWidget(label, 0, 0, 0, 0)
 
-        vbox.addLayout(editbox)
+        vbox.addWidget(self.title)
+
+        vbox.addLayout(formbox)
+        formbox.addWidget(butt)
+
+        vbox.addLayout(hbox)
         self.setLayout(vbox)
+
+    def add_operation(self):
+        ''' add operation '''
+
+        date_ = datetime(int(2012), int(1), int(21))
+        contact = AddressBook.all()[0]
+
+        transfer = Transfer(amount='1000', contact=contact, date=date_, number="")
+        transfer.save()
+        self.table.refresh(True)
+
+
+class OperationTableWidget(ZTableWidget):
+
+    def __init__(self, parent, *args, **kwargs):
+
+        ZTableWidget.__init__(self, parent=parent, *args, **kwargs)
+        self.header = [(u'Motant'), (u'Contact'), \
+                       (u'Date'), (u'number')]
+
+        self.set_data_for()
+        self.refresh(True)
+
+    def set_data_for(self):
+        self._data = [(operation.amount, operation.contact,\
+                      operation.date.strftime(u'%d-%m-%Y'),\
+                      operation.number) \
+                      for operation in Transfer.select()]
+

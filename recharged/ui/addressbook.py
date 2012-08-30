@@ -4,13 +4,12 @@
 
 from PySide import QtGui, QtCore
 
-from model import AddressBook
-from data_helper import date_datetime
-from common import (Z_Widget, Z_PageTitle, Z_BoxTitle, FormLabel, FormatDate,
-                    Z_TableWidget, Button, IntLineEdit, date_datetime)
+from model import GroupContact, AddressBook
+
+from common import ZWidget, ZBoxTitle, ZTableWidget, Button
 
 
-class AddressBookViewWidget(Z_Widget):
+class AddressBookViewWidget(ZWidget):
     """ Shows the home page  """
 
     def __init__(self, parent=0, *args, **kwargs):
@@ -19,271 +18,166 @@ class AddressBookViewWidget(Z_Widget):
         self.parent = parent
         self.parentWidget().setWindowTitle(u"Carnet d'adresse")
 
-        self.all = "tous"
-        vbox = QtGui.QVBoxLayout(self)
+        self.group = "tous"
         hbox = QtGui.QHBoxLayout(self)
-        editbox = QtGui.QGridLayout()
-        formbox = QtGui.QGridLayout()
 
-        self.table_order = BuyTableWidget(parent=self)
+        self.table_contact = ContactTableWidget(parent=self)
         self.table_resultat = ResultatTableWidget(parent=self)
         self.table_info = InfoTableWidget(parent=self)
-        self.table_resultat.refresh_(self.all)
-        completer = [self.all]
-        for address in AddressBook.all():
-            completer.append(address.name)
-            completer.append(address.phone.name)
-            completer.append(address.group.name)
+        self.table_group = GroupTableWidget(parent=self)
+        self.table_transf = TransfTableWidget(parent=self)
 
-        self.date = FormatDate(QtCore.QDate.currentDate())
-        self.name_client = QtGui.QLineEdit()
-        self.rech = QtGui.QLineEdit()
-        self.rech.setMaximumSize(200, self.rech.maximumSize().height())
-        self.rech.setCompleter(QtGui.QCompleter(completer))
-        self.rech.textChanged.connect(self.finder)
-
-        editbox.setColumnStretch(5, 2)
-
-        self.vline = QtGui.QFrame()
-        self.vline.setFrameShape(QtGui.QFrame.VLine)
-        self.vline.setFrameShadow(QtGui.QFrame.Sunken)
-
-        editbox.addWidget(FormLabel(u"Rechercher un produit:"), 0, 0)
-        editbox.addWidget(self.rech, 1, 0)
-        editbox.addWidget(self.vline, 0, 1, 2, 3)
-        editbox.addWidget(FormLabel(u"Date d'achat:"), 0, 3)
-        editbox.addWidget(self.date, 0, 4)
-
+        self.button_all = Button(u"Tous")
+        # self.button_all.clicked.connect(self.)
         splitter = QtGui.QSplitter(QtCore.Qt.Horizontal)
 
         splitter_left = QtGui.QSplitter(QtCore.Qt.Vertical)
+        # splitter_left.addWidget(self.button_all)
+        splitter_left.addWidget(ZBoxTitle(u"Les groups"))
+        splitter_left.addWidget(self.table_group)
+
+        splitter_details = QtGui.QSplitter(QtCore.Qt.Horizontal)
+        # splitter_details.resize(15, 20)
+        # splitter_details.addWidget(ZBoxTitle(u"details"))
+        splitter_details.addWidget(self.table_info)
+
         splitter_down = QtGui.QSplitter(QtCore.Qt.Vertical)
-        splitter_left.addWidget(Z_BoxTitle(u"Resultats de la recherche"))
-        splitter_left.addWidget(self.table_resultat)
-        splitter_down.resize(15, 20)
-        splitter_down.addWidget(self.table_info)
-        splitter_rigth = QtGui.QSplitter(QtCore.Qt.Vertical)
-        splitter_rigth.addWidget(Z_BoxTitle(u"Les adresses"))
-        splitter_rigth.addWidget(self.table_order)
-        splitter_rigth.resize(500, 900)
+        # splitter_down.resize(615, 110)
+        # splitter_down.addWidget(ZBoxTitle(u"Les groupes"))
+        splitter_down.addWidget(self.table_resultat)
+
+        splitter_transf = QtGui.QSplitter(QtCore.Qt.Horizontal)
+        # splitter_transf.addWidget(ZBoxTitle(u"Transfert"))
+        # splitter_transf.resize(815, 420)
+        splitter_transf.addWidget(self.table_transf)
+
+        splt_contact = QtGui.QSplitter(QtCore.Qt.Vertical)
+        splt_contact.addWidget(ZBoxTitle(u"Les contacts"))
+        splt_contact.addWidget(self.table_contact)
+        splt_contact.resize(1500, 1000)
 
         splitter_left.addWidget(splitter_down)
+        splitter_details.addWidget(splitter_transf)
+        splt_contact.addWidget(splitter_details)
         splitter.addWidget(splitter_left)
-        splitter.addWidget(splitter_rigth)
+        splitter.addWidget(splt_contact)
 
         hbox.addWidget(splitter)
-        vbox.addLayout(formbox)
-        vbox.addLayout(editbox)
-        vbox.addLayout(hbox)
-        self.setLayout(vbox)
-
-    def finder(self):
-        value = unicode(self.rech.text())
-        self.table_resultat.refresh_(value)
-
-    def save_b(self):
-        ''' add operation '''
-        pass
+        self.setLayout(hbox)
 
 
-class ResultatTableWidget(Z_TableWidget):
+class ResultatTableWidget(ZTableWidget):
     """docstring for ResultatTableWidget"""
+
     def __init__(self, parent, *args, **kwargs):
-        Z_TableWidget.__init__(self, parent=parent, *args, **kwargs)
+        ZTableWidget.__init__(self, parent=parent, *args, **kwargs)
 
-        self.hheaders = ["info", u"Resultat", u"Ajouter"]
-
-        self.stretch_columns = []
-        self.align_map = {2: 'l'}
-        self.max_rows = 1
-        self.display_vheaders = False
-        self.display_fixed = True
-        self.refresh()
-
-    def refresh_(self, value):
-        """ """
-        self._reset()
-        self.set_data_for(value)
-        self.refresh()
-
-    def set_data_for(self, value):
-
-        address = []
-        prod_rech = value.capitalize()
-        if prod_rech == self.all:
-            address = AddressBook.all()
-        try:
-            produit = AddressBook.filter(article=prod_rech).get()
-            address.append(produit)
-        except AddressBook.DoesNotExist:
-            pass
-        try:
-            self.data = [("", prod.article, "") for prod in address]
-        except AttributeError:
-            pass
-
-    def _item_for_data(self, row, column, data, context=None):
-        if column == 2:
-            return QtGui.QTableWidgetItem(QtGui.QIcon("images/go-next.png"),
-                                                      "Ajouter")
-        if column == 0:
-            return QtGui.QTableWidgetItem(QtGui.QIcon("images/info.png"), "")
-        return super(ResultatTableWidget, self)._item_for_data(row, column,
-                                                               data, context)
-
-    def click_item(self, row, column, *args):
-        self.choix = AddressBook.filter(article=self.data[row][1]).get()
-        if column != 2:
-            self.parent.table_info.refresh_(self.choix.id)
-        if column == 2:
-            # self.removeRow(row)
-            self.parent.table_order.refresh_(self.choix)
+        self.header = ["info", u"Resultat", u"Ajouter"]
 
 
-class InfoTableWidget(Z_Widget):
+class InfoTableWidget(ZTableWidget):
 
     def __init__(self, parent=0, *args, **kwargs):
         super(InfoTableWidget, self).__init__(parent=parent,\
                                                         *args, **kwargs)
         self.parent = parent
-        self.refresh()
-        self.articlelabel = QtGui.QLabel("")
-        self.article = QtGui.QLabel(" ")
-        self.stock_restant = QtGui.QLabel(" ")
-        self.imagelabel = QtGui.QLabel("")
+        self.header = [u'', u"Nom", u"Telephone"]
 
-        vbox = QtGui.QVBoxLayout()
-        hbox = QtGui.QHBoxLayout()
-        gridbox = QtGui.QGridLayout()
-        self.image = Button("")
-        self.image.clicked.connect(self.chow_image)
-        gridbox.addWidget(self.articlelabel, 1, 0)
-        gridbox.addWidget(self.article, 1, 1)
-        gridbox.addWidget(self.stock_restant, 4, 0, 1, 2)
-        gridbox.addWidget(self.imagelabel, 5, 0, 1, 5)
-        hbox.addWidget(self.image)
-        # gridbox.setColumnStretch(3, 3)
-        vbox.addLayout(gridbox)
-        vbox.addLayout(hbox)
-        self.setLayout(vbox)
+    def refresh_(self, number):
+        self._reset()
+        self.set_data_for(number)
+        self.refresh(True)
 
-    def refresh_(self, idd):
-
-        self.prod = AddressBook.get(id=idd)
-
-        self.articlelabel.setText((u"<b>Article:<b>"))
-        self.article.setText(self.prod.article)
-
-        self.article.setStyleSheet("solid #B1B1B4;"
-                                         "font-size:20px;")
-
-        self.imagelabel.setText(u"<b>Pas d'image</b>")
-        self.image.setStyleSheet("")
-        if self.prod.image:
-            self.imagelabel.setText(u"<b>Image</b>")
-            self.image.setStyleSheet("background: url(%s)"
-                                     " no-repeat scroll 20px 110px #CCCCCC;"
-                                     "width: 55px"
-                                     % self.prod.image)
-
-    def chow_image(self):
-        """ doit afficher l'image complete dans une autre fenetre"""
-        from show_image import ShowImageViewWidget
-        try:
-            self.parent.open_dialog(ShowImageViewWidget, modal=True,
-                                                            prod=self.prod)
-        except:
-            pass
+    def set_data_for(self, number):
+        self.data = [('', number, "ejsfsv")]
 
 
-class BuyTableWidget(Z_TableWidget):
+class ContactTableWidget(ZTableWidget):
+    """ Reçoit un groupe et affiche ses contactes et affiche tous les
+        contactes par defaut"""
 
     def __init__(self, parent, *args, **kwargs):
-        Z_TableWidget.__init__(self, parent=parent, *args, **kwargs)
-        self.hheaders = [u"Quantité du produit", u"Désignation"]
+        ZTableWidget.__init__(self, parent=parent, *args, **kwargs)
+        self.header = [u'', u"Nom", u"Telephone"]
+        self.group = parent.group
 
         self.setSelectionMode(QtGui.QAbstractItemView.NoSelection)
+        self.set_data_for(self.group)
+        self.refresh(True)
 
-        self.stretch_columns = [0,1]
-        self.align_map = {1: 'l', 0: 'r'}
-        self.max_rows = 100
-        self.display_vheaders = False
-        self.display_fixed = True
-        self.refresh()
-        self.isvalid = False
+    def refresh_(self, group):
+        self._reset()
+        self.set_data_for(group)
+        self.refresh(True)
 
-    def extend_rows(self):
-        nb_rows = self.rowCount()
-
-        self.setRowCount(nb_rows + 1)
-        self.setSpan(nb_rows, 0, 1, 1)
-        bicon = QtGui.QIcon.fromTheme('',
-                                       QtGui.QIcon('images/save.png'))
-        self.button = QtGui.QPushButton(bicon, u"Enrgistré")
-        self.button.released.connect(self.parent.save_b)
-        self.setCellWidget(nb_rows, 1, self.button)
-
-        self.setColumnWidth(0, 200)
-        self.setColumnWidth(1, 500)
+    def set_data_for(self, group):
+        self.data = [('', group, "ejsfsv")]
 
     def _item_for_data(self, row, column, data, context=None):
-        if column != 1 and column != 3:
-            self.line_edit = IntLineEdit()
-            self.line_edit.textChanged.connect(self.changed_value)
-            return self.line_edit
-        return super(BuyTableWidget, self)._item_for_data(row,
-                                                            column, data,
-                                                            context)
+        if column == 0:
+            return QtGui.QTableWidgetItem(QtGui.QIcon("images/info.png"), "")
+        return super(ContactTableWidget, self)._item_for_data(row, column,
+                                                               data, context)
 
-    def is_int(self, value):
-        try:
-            return int(value)
-        except:
-            return 0
-
-    def get_table_items(self):
-        """  """
-        list_order = []
-        for i in range(self.rowCount() - 1):
-            liste_item = []
-            try:
-                liste_item.append(str(self.cellWidget(i, 0).text()))
-                liste_item.append(str(self.item(i, 1).text()))
-                list_order.append(liste_item)
-            except:
-                liste_item.append("")
-
-        return list_order
-
-    def changed_value(self, refresh=False):
-        """ Calcule les Resultat """
-        for row_num in xrange(0, self.data.__len__()):
-
-            qtsaisi = self.is_int(self.cellWidget(row_num, 0).text())
-
-            self.isvalid = True
-            viderreur_qtsaisi = ""
-            stylerreur = "background-color: rgb(255, 235, 235);border: 3px double SeaGreen"
-            if qtsaisi == 0:
-                viderreur_qtsaisi = stylerreur
-                self.cellWidget(row_num, 0).setToolTip(u"La quantité est obligatoire")
-                self.isvalid = False
-
-            self.cellWidget(row_num, 0).setStyleSheet(viderreur_qtsaisi)
-
-            self.cellWidget(row_num, 0).setToolTip("")
+    def click_item(self, row, column, *args):
+        # self.choix = AddressBook.filter(phone__number=self.data[row][1]).get()
+        if column == 0:
+            self.parent.table_info.refresh_(self.data[row][1])
+            self.parent.table_transf.refresh_(self.data[row][1])
 
 
-    def refresh_(self, choix=None):
+class GroupTableWidget(QtGui.QTreeWidget):
+    """affiche tout le nom de tous les groupes"""
 
-        self.line = [0, u"%s" % choix.article]
+    def __init__(self, parent, *args, **kwargs):
+        super(GroupTableWidget, self).__init__(parent)
+        self.parent = parent
 
-        self.ex_data = self.get_table_items()
-        if not self.line in self.data:
-            self._reset()
-            self.set_data_for()
-            self.refresh()
+        self.setHeaderHidden(True)
+        self.setAlternatingRowColors(True)
+        self.setMouseTracking(True)
+        self.setAllColumnsShowFocus(False)
+        self.setFocusPolicy(QtCore.Qt.TabFocus)
+        self.setAnimated(True)
+        self.itemClicked.connect(self.handleClicked)
+        self.setTextElideMode(QtCore.Qt.ElideMiddle)
+        # self.setRootIsDecorated(False)
+        # self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
 
-    def set_data_for(self):
+        h = QtGui.QTreeWidgetItem(self)
+        h.setText(0, "Tous")
+        items = [["Groupes", [gr.name for gr in GroupContact.all()]]]
+        for item in items:
+            p = QtGui.QTreeWidgetItem(self)
+            # p.setIcon(0, QtGui.QIcon('images/group.png'))
+            p.setText(0, item[0])
+            for i in item[1]:
+                c = QtGui.QTreeWidgetItem(p)
+                c.setIcon(0, QtGui.QIcon('images/group.png'))
+                c.setText(0, i)
 
-        self.data.extend([self.line])
+    def handleClicked(self, item, column):
+        self.gr = item.data(column, 0)
+        self.parent.table_contact.refresh_(self.gr)
+
+
+class TransfTableWidget(ZTableWidget):
+    """docstring for ResultatTableWidget"""
+
+
+    def __init__(self, parent, *args, **kwargs):
+        ZTableWidget.__init__(self, parent=parent, *args, **kwargs)
+
+        self.header = ["Date", u"Numero", u"Montant"]
+
+        self.group = parent.group
+        self.set_data_for(self.group)
+        self.refresh(True)
+
+    def refresh_(self, group):
+        self._reset()
+        self.set_data_for(group)
+        self.refresh(True)
+
+    def set_data_for(self, number):
+        self.data = [('', number, 300)]
