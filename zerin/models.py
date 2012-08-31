@@ -20,7 +20,7 @@ class BaseModel(peewee.Model):
 
 
 class Group(BaseModel):
-    """ Group of contacts"""
+    """ Group of contacts """
 
     name = peewee.CharField(max_length=30, verbose_name=u"Nom")
 
@@ -30,6 +30,7 @@ class Group(BaseModel):
 
 class Operator(BaseModel):
     """ Operators """
+
     slug = peewee.CharField(max_length=30, verbose_name=u"Code")
     name = peewee.CharField(max_length=30, verbose_name=u"Nom")
 
@@ -52,15 +53,16 @@ class Contact(BaseModel):
     """ Contact address book """
 
     name = peewee.CharField(max_length=100, verbose_name=(u"Nom"), unique=True)
-    phone = peewee.ForeignKeyField(PhoneNumber, verbose_name=u"Téléphone",
-                                   related_name='phones')
+    number = peewee.ForeignKeyField(PhoneNumber, verbose_name=u"Téléphone",
+                                   related_name='numbers')
 
     def __unicode__(self):
         return u"%(name)s" % {"name": self.name}
 
 
 class ContactGroup(BaseModel):
-    """ """
+    """ Contact with group """
+
     contact = peewee.ForeignKeyField(Contact, verbose_name=u"Contact",
                                    related_name='contacts')
     group = peewee.ForeignKeyField(Group, verbose_name=u"Groupe",
@@ -71,33 +73,13 @@ class Transfer(BaseModel):
     """ Ensemble des  transferts effectués """
 
     amount = peewee.IntegerField(verbose_name=u"Montant")
-    contact = peewee.ForeignKeyField(Contact, verbose_name=u"Téléphone",
-                                     related_name='contacts',
-                                     blank=True, null=True)
+    number = peewee.ForeignKeyField(PhoneNumber, verbose_name=u"Téléphone",
+                                   related_name='numbers')
     date = peewee.DateTimeField(verbose_name=u"Date")
 
-    number = peewee.IntegerField(verbose_name=u"Telephone",
-                                     blank=True, null=True)
-
     def __unicode__(self):
-        return u"%(amount)s/%(contact)s" % {"contact": self.contact,
+        return u"%(amount)s/%(number)s" % {"number": self.number,
                                              "amount": self.amount}
-
-    def sender(self):
-        """ choix du destinateur """
-        sender = self.number
-        if self.contact:
-            sender = self.contact
-
-        return sender
-
-    def full_name(self):
-        """ choix du destinateur """
-
-        if self.contact:
-            return "%s/%s" % (self.contact.name, self.contact)
-        return self.number
-
 
 class Settings(BaseModel):
     password = peewee.CharField(max_length=30, verbose_name=(u"Nom"))

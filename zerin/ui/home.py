@@ -4,7 +4,7 @@
 
 from PySide import QtGui, QtCore
 from datetime import datetime
-from common import ZWidget, ZPageTitle, ZTableWidget
+from common import ZWidget, ZPageTitle, ZTableWidget, Button, ZBoxTitle
 from database import Transfer, Contact
 
 
@@ -18,6 +18,19 @@ class HomeViewWidget(ZWidget):
         self.table = OperationTableWidget(parent=self)
         hbox = QtGui.QHBoxLayout()
         hbox.addWidget(self.table)
+
+        splitter = QtGui.QSplitter(QtCore.Qt.Horizontal)
+
+        splitter_left = QtGui.QSplitter(QtCore.Qt.Vertical)
+        splitter_right = QtGui.QSplitter(QtCore.Qt.Vertical)
+
+        splitter_left.addWidget(ZBoxTitle(u"Les groups"))
+        splitter_left.addWidget(self.table)
+
+        splitter.addWidget(splitter_left)
+        splitter.addWidget(splitter_right)
+
+        hbox.addWidget(splitter)
 
         self.parent = parent
         self.parentWidget().setWindowTitle(u"Bienvenu sur Zerin")
@@ -34,7 +47,7 @@ class HomeViewWidget(ZWidget):
 
         self.amount = QtGui.QLineEdit()
         self.amount.setValidator(QtGui.QIntValidator())
-        butt = QtGui.QPushButton((u"OK"))
+        butt = Button(u"OK")
         butt.clicked.connect(self.add_operation)
 
 
