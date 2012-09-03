@@ -60,7 +60,7 @@ class ZTableWidget(QtGui.QTableWidget, ZWidget):
 
         self.cellClicked.connect(self.click_item)
 
-        self.verticalHeader().setVisible(False)
+        self.verticalHeader().setVisible(True)
         self.horizontalHeader().setStretchLastSection(True)
         self.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
         self.setSelectionMode(QtGui.QAbstractItemView.SingleSelection)
@@ -189,17 +189,6 @@ class ZTableWidget(QtGui.QTableWidget, ZWidget):
 
     def click_item(self, row, column, *args):
         pass
-
-
-
-class TabPane(QtGui.QTabBar):
-
-    def __init__(self, parent=None):
-        super(TabPane, self).__init__(parent)
-
-    def addBox(self, box):
-        self.setLayout(box)
-
 
 class ZBoxTitle(QtGui.QLabel):
     """ """

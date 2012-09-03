@@ -14,12 +14,12 @@ class MainWindow(QtGui.QMainWindow):
     def __init__(self):
         QtGui.QMainWindow.__init__(self)
 
-        self.resize(1200, 600)
+        self.resize(800, 600)
         self.setWindowTitle(u"Zerin")
         self.setWindowIcon(QtGui.QIcon('images/logo.png'))
 
-        self.change_context(HomeViewWidget)
-        # self.change_context(ContactViewWidget)
+        # self.change_context(HomeViewWidget)
+        self.change_context(ContactViewWidget)
 
         self.menubar = MenuBarTransfer(self)
         self.setMenuBar(self.menubar)

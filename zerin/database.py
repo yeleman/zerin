@@ -11,7 +11,7 @@ def setup(drop_tables=False):
 
     did_create = False
 
-    for models in [Group, Operator, PhoneNumber, Contact, ContactGroup, Transfer,
+    for models in [Group, Operator, Contact, PhoneNumber, ContactGroup, Transfer,
                     Settings]:
         if drop_tables:
             models.drop_table()

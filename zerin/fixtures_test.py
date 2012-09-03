@@ -2,50 +2,85 @@
 # encoding= utf-8
 #maintainer : alou
 
+from random import randint
+
 from datetime import datetime
 from models import  Group, Operator, PhoneNumber, Contact, ContactGroup, Transfer
 
-list_ = []
-group1 = Group(name=u"LIONS").save()
-group2 = Group(name=u"LEO").save()
 
-group1 = Group.get(id=1)
-group2 = Group.get(id=2)
+print "Group"
 
-operator_o = Operator(slug='orange', name='Orange').save()
-operator_m = Operator(slug='malitel', name='Malitel').save()
+group_list = [u"kunafoni", u"LEO", u"Yeleman", u"fanga"]
+for i in group_list:
+    try:
+        Group(name=i).save()
+        print i, "............. OK"
+    except:
+        print i, "no..............."
 
-operator_o = Operator.get(id=1)
-operator_m = Operator.get(id=2)
+print "Operator"
+list_op = [('orange', u'Orange'), ('malitel', u'Malitel')]
 
-phone_o = PhoneNumber(number=76499055, operator=operator_o).save()
-phone_m = PhoneNumber(number=69500451, operator=operator_m).save()
+for i , n in list_op:
+    try:
+        Operator(slug=i, name=n).save()
+        print i, n, "............. OK"
+    except:
+        print n, "no"
 
-phone_o = PhoneNumber.get(id=1)
-phone_m = PhoneNumber.get(id=2)
+print "PhoneNumber"
+list_phone = [(76499055, 1, 1), (69500451, 2, 1),
+              (76433890, 1, 2), (63341424, 2, 2),
+              (73120896, 1, 3), (76333005, 1, 4),
+              (66430000, 2, 5)]
 
-contact1 = Contact(name='alou', phone=phone_o, group=group1).save()
-contact2 = Contact(name='fad', phone=phone_m, group=group2).save()
-
-contact1 = Contact.get(id=1)
-contact2 = Contact.get(id=2)
-
-contactgropup1 = ContactGroup(contact=contact1, group=group1).save()
-contactgropup2 = ContactGroup(contact=contact1, group=group1).save()
-
-contactgropup1 = ContactGroup.get(id=1)
-contactgropup2 = ContactGroup.get(id=2)
-date1 = datetime(int(2012), int(11), int(21))
-date2 = datetime(int(2012), int(1), int(21))
-
-transfer1 = Transfer(amount='1000', contact=contact1,
-                     date=date1, number=0).save()
-transfer2 = Transfer(amount='1500', contact=contact2,
-                     date=date2, number=0).save()
+for number, operator, contact in list_phone:
+    try:
+        PhoneNumber(number=number, operator=operator, contact=contact).save()
+        print i, n, "............. OK"
+    except:
+        print n, "no"
 
 
-list_ = [group1, group2, operator_o, operator_m, phone_o, phone_m, contact1,
-         contact2, transfer1, transfer2]
+print "Contact"
 
-print list_
+list_contacts = [u'alou Dolo', u'Ibrahima Fadiga',
+                 u'Ali Toure', u'Renaud Gaudin',
+                 u'Marie Augustine Rose Sidibe']
 
+for contact in list_contacts:
+    try:
+        Contact(name=contact).save()
+        print i, n, "............. OK"
+    except:
+        print i, n, "no"
+
+print "ContactGroup"
+Group.filter(id=1).get()
+l_cont_group = [(1, 2), (1, 3), (1, 4),
+                (2, 3), (2, 4),
+                (3, 1), (3, 3),
+                (4, 1), (4, 3),
+                (5, 4)]
+
+for c, g in l_cont_group:
+    try:
+        ContactGroup(contact=c, group=g).save()
+        print c, g, "............. OK"
+    except:
+        print c, g, "............. OK"
+
+print "Transfer"
+
+
+for i in range(1, 15):
+    try:
+        num = randint(1, 5)
+        Transfer(amount=randint(100, 1000),
+                 date=datetime(2012, 11, randint(1, 29), randint(1, 23),
+                               randint(1, 59), randint(1, 59)),
+                 number=num).save()
+        print u"Transfert N:", i, " de ", Transfer.filter(number=num).get().number.contact.name, "............. OK"
+    except:
+        raise
+        print i, "no"
