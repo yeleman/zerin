@@ -18,8 +18,8 @@ class MainWindow(QtGui.QMainWindow):
         self.setWindowTitle(u"Zerin")
         self.setWindowIcon(QtGui.QIcon('images/logo.png'))
 
-        # self.change_context(HomeViewWidget)
-        self.change_context(ContactViewWidget)
+        self.change_context(HomeViewWidget)
+        # self.change_context(ContactViewWidget)
 
         self.menubar = MenuBarTransfer(self)
         self.setMenuBar(self.menubar)

@@ -53,10 +53,17 @@ class PhoneNumber(BaseModel):
     operator = peewee.ForeignKeyField(Operator, verbose_name=u"Opérateur",
                                                       related_name='operators')
     contact = peewee.ForeignKeyField(Contact, verbose_name=u"Téléphone",
-                                                        related_name='numbers')
+                                                        related_name='contacts',
+                                    blank=True, null=True)
 
     def __unicode__(self):
         return u"%(number)s" % {u"number": self.number}
+
+    def full_name(self):
+        try:
+            return self.contact.name
+        except :
+            return self.number
 
 
 class ContactGroup(BaseModel):
