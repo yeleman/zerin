@@ -2,11 +2,13 @@
 # -*- coding: utf-8 -*-
 # maintainer: Fadiga
 
+
 from PySide import QtGui, QtCore
 
 from models import Contact, Transfer, ContactGroup, Group, PhoneNumber
 
 from common import ZWidget, ZBoxTitle, ZTableWidget
+from addgroup import GroupViewWidget
 
 
 class ContactViewWidget(ZWidget):
@@ -22,10 +24,10 @@ class ContactViewWidget(ZWidget):
         hbox = QtGui.QHBoxLayout(self)
 
         self.table_contact = ContactTableWidget(parent=self)
-        self.table_resultat = ResultatTableWidget(parent=self)
         self.table_info = InfoTableWidget(parent=self)
         self.table_group = GroupTableWidget(parent=self)
         self.table_transf = TransfTableWidget(parent=self)
+        self.operation = OperationWidget(parent=self)
 
         splitter = QtGui.QSplitter(QtCore.Qt.Horizontal)
 
@@ -40,7 +42,7 @@ class ContactViewWidget(ZWidget):
         splitter_details.addWidget(self.table_info)
 
         splitter_down = QtGui.QSplitter(QtCore.Qt.Vertical)
-        splitter_down.addWidget(self.table_resultat)
+        splitter_down.addWidget(self.operation)
 
         splitter_transf = QtGui.QSplitter(QtCore.Qt.Horizontal)
         splitter_transf.addWidget(self.table_transf)
@@ -60,14 +62,86 @@ class ContactViewWidget(ZWidget):
         self.setLayout(hbox)
 
 
-class ResultatTableWidget(ZTableWidget):
-    """docstring for ResultatTableWidget"""
+class OperationWidget(ZWidget):
+    """docstring for OperationWidget"""
 
     def __init__(self, parent, *args, **kwargs):
-        ZTableWidget.__init__(self, parent=parent, *args, **kwargs)
+        ZWidget.__init__(self, parent=parent, *args, **kwargs)
 
-        self.header = ["info", u"Resultat", u"Ajouter"]
+        vbox = QtGui.QVBoxLayout()
+        editbox = QtGui.QGridLayout()
+        self.parent = parent
 
+        self.search_field = QtGui.QLineEdit()
+        self.search_field.textChanged.connect(self.finder)
+        self.search_field.setToolTip(u"Taper le nom ou le numéro de "
+                                     u"téléphone à chercher")
+        self.empty = QtGui.QLabel(u"")
+        editbox.addWidget(self.search_field, 0, 0)
+
+        bicon = QtGui.QIcon.fromTheme('search', QtGui.QIcon(''))
+        search_but =QtGui.QPushButton(bicon, u"")
+        search_but.clicked.connect(self.search)
+        editbox.addWidget(search_but, 0, 1)
+        editbox.addWidget(self.empty, 1, 0)
+
+        bicon = QtGui.QIcon.fromTheme('document-new', QtGui.QIcon(''))
+        addgroup_but =QtGui.QPushButton(bicon, u"Nouveau groupe")
+        addgroup_but.clicked.connect(self.addgroup)
+
+        editbox.addWidget(addgroup_but, 2, 0)
+
+        vbox.addLayout(editbox)
+        self.setLayout(vbox)
+
+    def finder(self):
+        completion_values = []
+        search_term = self.search_field.text()
+        try:
+            contacts = PhoneNumber.filter(number__icontains=int(search_term))
+        except ValueError:
+            contacts = Contact.filter(name__icontains=search_term)
+            pass
+        for contact in contacts:
+            completion_values.append(contact.__unicode__())
+        completer = QtGui.QCompleter(completion_values, parent=self)
+        completer.setCaseSensitivity(QtCore.Qt.CaseInsensitive)
+        completer.setCompletionMode(QtGui.QCompleter.UnfilteredPopupCompletion)
+
+        self.search_field.setCompleter(completer)
+
+        #
+
+    def search(self):
+
+        value = self.search_field.text()
+        self.empty.setStyleSheet("")
+        self.empty.setText(u"")
+        contacts = []
+
+        try:
+            contacts = PhoneNumber.filter(number__icontains=int(value))
+        except ValueError:
+            contacts = PhoneNumber.filter(contact__name__icontains=value)
+            pass
+
+        try:
+            value = contacts.get()
+            self.parent.table_info.refresh_(value)
+            self.parent.table_transf.refresh_(value)
+            self.search_field.clear()
+        except AttributeError:
+            pass
+        except:
+            self.empty.setStyleSheet("font-size:20px; color: red")
+            self.empty.setText(u"%s n'existe pas" % value)
+
+    def addgroup(self):
+        """ Affiche un QDialog qui permet d'ajouter un nouveau groupe """
+        try:
+            self.parent.open_dialog(GroupViewWidget, modal=True, table_group=self.parent)
+        except:
+            raise
 
 class GroupTableWidget(QtGui.QTreeWidget):
     """affiche tout le nom de tous les groupes"""
@@ -92,12 +166,29 @@ class GroupTableWidget(QtGui.QTreeWidget):
         items = [["Groupes", [gr.name for gr in Group.all()]]]
         for item in items:
             p = QtGui.QTreeWidgetItem(self)
-            # p.setIcon(0, QtGui.QIcon('images/group.png'))
             p.setText(0, item[0])
             for i in item[1]:
                 c = QtGui.QTreeWidgetItem(p)
                 c.setIcon(0, QtGui.QIcon('images/group.png'))
                 c.setText(0, i)
+
+    def refresh_(self):
+        """
+           Ne fait rien pour l'instant """
+        pass
+
+        # h = QtGui.QTreeWidgetItem(self)
+        # h.setText(0, "Tous")
+        # items = [["Groupes", [gr.name for gr in Group.all()]]]
+        # for item in items:
+        #     p = QtGui.QTreeWidgetItem(self)
+        #     # p.setIcon(0, QtGui.QIcon('images/group.png'))
+        #     p.setText(0, item[0])
+        #     for i in item[1]:
+        #         c = QtGui.QTreeWidgetItem(p)
+        #         c.setIcon(0, QtGui.QIcon('images/group.png'))
+        #         c.setText(0, i)
+
 
     def handleClicked(self, item, column):
         self.gr = item.data(column, 0)
@@ -110,11 +201,12 @@ class ContactTableWidget(ZTableWidget):
 
     def __init__(self, parent, *args, **kwargs):
         ZTableWidget.__init__(self, parent=parent, *args, **kwargs)
+        group = parent.group
+
         self.header = [u'', u"Nom"]
+        self.max_width = 500
 
-        self.group = parent.group
-
-        self.set_data_for(self.group)
+        self.set_data_for(group)
         self.refresh(True)
 
     def refresh_(self, group):
@@ -148,6 +240,8 @@ class InfoTableWidget(ZTableWidget):
     def __init__(self, parent=0, *args, **kwargs):
         super(InfoTableWidget, self).__init__(parent=parent, *args, **kwargs)
         self.parent = parent
+        self.max_width = 400
+
         self.header = [u"Nom", u"Telephone"]
 
     def refresh_(self, number):
@@ -167,6 +261,8 @@ class TransfTableWidget(ZTableWidget):
     def __init__(self, parent, *args, **kwargs):
         ZTableWidget.__init__(self, parent=parent, *args, **kwargs)
 
+        self.max_width = 450
+
         self.header = [u"Numero", u"Date du transfert", u"Montant(FCFA)"]
         self.set_data_for("")
         self.refresh(True)
@@ -179,8 +275,9 @@ class TransfTableWidget(ZTableWidget):
     def set_data_for(self, number):
 
         try:
-            self.data = [(transf.number, transf.date.strftime(u"%A le %d %b %Y a %Hh:%Mmn"), transf.amount)
-                          for transf in Transfer.all()\
+            self.data = [(transf.number,
+                          transf.date.strftime(u"%a %d %b %Y a %Hh:%Mmn"),
+                          transf.amount) for transf in Transfer.all()\
                            if transf.number.contact==number.contact]
         except AttributeError:
             pass

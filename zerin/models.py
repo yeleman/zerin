@@ -44,7 +44,7 @@ class Contact(BaseModel):
     name = peewee.CharField(max_length=100, verbose_name=(u"Nom"), unique=True)
 
     def __unicode__(self):
-        return u"%(name)s" % {"name": self.name}
+        return u"%(name)s" % {"name": self.name.title()}
 
 class PhoneNumber(BaseModel):
     """ Contact number """
