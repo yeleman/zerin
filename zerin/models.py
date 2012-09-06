@@ -22,7 +22,7 @@ class BaseModel(peewee.Model):
 class Group(BaseModel):
     """ Group of contacts """
 
-    name = peewee.CharField(max_length=30, verbose_name=u"Nom")
+    name = peewee.CharField(max_length=30, verbose_name=u"Nom", unique=True)
 
     def __unicode__(self):
         return u"%(name)s" % {"name": self.name}
@@ -41,10 +41,11 @@ class Operator(BaseModel):
 class Contact(BaseModel):
     """ Contact address book """
 
-    name = peewee.CharField(max_length=100, verbose_name=(u"Nom"), unique=True)
+    name = peewee.CharField(max_length=100, verbose_name=u"Nom", unique=True)
 
     def __unicode__(self):
         return u"%(name)s" % {"name": self.name.title()}
+
 
 class PhoneNumber(BaseModel):
     """ Contact number """

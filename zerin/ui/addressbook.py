@@ -20,7 +20,6 @@ class ContactViewWidget(ZWidget):
         self.parent = parent
         self.parentWidget().setWindowTitle(u"Carnet d'adresse")
 
-        self.group = "Tous"
         hbox = QtGui.QHBoxLayout(self)
 
         self.table_contact = ContactTableWidget(parent=self)
@@ -37,8 +36,6 @@ class ContactViewWidget(ZWidget):
         splitter_left.addWidget(self.table_group)
 
         splitter_details = QtGui.QSplitter(QtCore.Qt.Horizontal)
-        # splitter_details.resize(15, 20)
-        # splitter_details.addWidget(ZBoxTitle(self.info_name))
         splitter_details.addWidget(self.table_info)
 
         splitter_down = QtGui.QSplitter(QtCore.Qt.Vertical)
@@ -101,7 +98,7 @@ class OperationWidget(ZWidget):
             contacts = PhoneNumber.filter(number__icontains=int(search_term))
         except ValueError:
             contacts = Contact.filter(name__icontains=search_term)
-            pass
+
         for contact in contacts:
             completion_values.append(contact.__unicode__())
         completer = QtGui.QCompleter(completion_values, parent=self)
@@ -127,8 +124,7 @@ class OperationWidget(ZWidget):
 
         try:
             value = contacts.get()
-            self.parent.table_info.refresh_(value)
-            self.parent.table_transf.refresh_(value)
+            self.parent.table_contact.refresh_(search=value)
             self.search_field.clear()
         except AttributeError:
             pass
@@ -166,24 +162,22 @@ class GroupTableWidget(QtGui.QTreeWidget):
         self.refresh_()
 
     def refresh_(self):
-        """
-           Ne fait rien pour l'instant """
+        """ Rafraichir la liste des groupes"""
         self.clear()
         items = {"Tous": []}
         items.update({"Groupes": [gr.name for gr in Group.all()]})
-        print items
-        for item in items:
+        for title in items:
             treeWidget = QtGui.QTreeWidgetItem(self)
-            treeWidget.setText(0, item)
-            for i in items[item]:
-                c = QtGui.QTreeWidgetItem(treeWidget)
-                c.setIcon(0, QtGui.QIcon('images/group.png'))
-                c.setText(0, i)
+            treeWidget.setText(0, title)
+            for group_name in items[title]:
+                t_child = QtGui.QTreeWidgetItem(treeWidget)
+                t_child.setIcon(0, QtGui.QIcon('images/group.png'))
+                t_child.setText(0, group_name)
 
 
     def handleClicked(self, item, column):
         self.gr = item.data(column, 0)
-        self.parent.table_contact.refresh_(self.gr)
+        self.parent.table_contact.refresh_(group=self.gr)
 
 
 class ContactTableWidget(ZTableWidget):
@@ -192,24 +186,28 @@ class ContactTableWidget(ZTableWidget):
 
     def __init__(self, parent, *args, **kwargs):
         ZTableWidget.__init__(self, parent=parent, *args, **kwargs)
-        group = parent.group
+
+        self.parent = parent
 
         self.header = [u'', u"Nom"]
         self.max_width = 500
 
-        self.set_data_for(group)
+        self.set_data_for()
         self.refresh(True)
 
-    def refresh_(self, group):
+    def refresh_(self, group=None, search=None):
         self._reset()
-        self.set_data_for(group)
+        self.set_data_for(group=group, search=search)
         self.refresh(True)
 
-    def set_data_for(self, group):
+    def set_data_for(self, group=None, search=None):
 
-        if group == "Tous":
-            self.data = [("", contact.name) for contact in Contact.all()]
+        if search:
+            self.data = [("", tel.contact.name) for tel in PhoneNumber.all()
+                                            if search.contact==tel.contact]
         else:
+            self.data = [("", contact.name) for contact in Contact.all()]
+        if group:
             self.data = [("", contact_gp.contact.name) for contact_gp in
                                         ContactGroup.filter(group__name=group)]
 
@@ -252,7 +250,7 @@ class TransfTableWidget(ZTableWidget):
     def __init__(self, parent, *args, **kwargs):
         ZTableWidget.__init__(self, parent=parent, *args, **kwargs)
 
-        self.max_width = 450
+        self.max_width = 400
 
         self.header = [u"Numero", u"Date du transfert", u"Montant(FCFA)"]
         self.set_data_for("")
@@ -267,7 +265,7 @@ class TransfTableWidget(ZTableWidget):
 
         try:
             self.data = [(transf.number,
-                          transf.date.strftime(u"%a %d %b %Y a %Hh:%Mmn"),
+                          transf.date.strftime(u"%d/%m/%Y a %Hh:%Mmn"),
                           transf.amount) for transf in Transfer.all()\
                            if transf.number.contact==number.contact]
         except AttributeError:
