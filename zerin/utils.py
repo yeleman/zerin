@@ -9,8 +9,9 @@ import tempfile
 import subprocess
 from datetime import date
 
-from PySide import QtCore
+from PySide import QtCore, QtGui
 
+from ui.window import ZWindow
 
 
 class PDFFileUnavailable(IOError):
@@ -49,7 +50,6 @@ def display_pdf(pdf_file):
                                  % pdf_file)
 
 
-
 def formatted_number(number):
     try:
         return locale.format("%d", number, grouping=True) \
@@ -66,6 +66,7 @@ def get_temp_filename(extension=None):
         fname = f.name
     return fname
 
+
 def date2qdate(adate):
     ''' returns a date object from a QtCore.QDate '''
     return QtCore.QDate(adate.year, adate.month, adate.day)
@@ -74,3 +75,17 @@ def date2qdate(adate):
 def qdate2date(adate):
     ''' returns a QtCore.QDate from a date object '''
     return date(adate.year(), adate.month(), adate.day())
+
+
+def raise_error(title, message):
+    box = QtGui.QMessageBox(QtGui.QMessageBox.Critical, title, \
+                            message, QtGui.QMessageBox.Ok, \
+                            parent=ZWindow.window)
+    box.exec_()
+
+
+def raise_success(title, message):
+    box = QtGui.QMessageBox(QtGui.QMessageBox.Information, title, \
+                            message, QtGui.QMessageBox.Ok, \
+                            parent=ZWindow.window)
+    box.exec_()
