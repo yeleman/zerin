@@ -27,8 +27,8 @@ class GroupViewWidget(QtGui.QDialog, ZWidget):
         butt.clicked.connect(self.edit_prod)
         cancel_but = QtGui.QPushButton(u"Annuler")
         cancel_but.clicked.connect(self.cancel)
-        editbox.addWidget(cancel_but, 1, 0)
         editbox.addWidget(butt, 1, 1)
+        editbox.addWidget(cancel_but, 1, 0)
 
         vbox.addLayout(editbox)
         self.setLayout(vbox)

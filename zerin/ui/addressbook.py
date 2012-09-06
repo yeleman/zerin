@@ -149,45 +149,36 @@ class GroupTableWidget(QtGui.QTreeWidget):
     def __init__(self, parent, *args, **kwargs):
         super(GroupTableWidget, self).__init__(parent)
         self.parent = parent
-
         self.setHeaderHidden(True)
         self.setAlternatingRowColors(True)
         self.setMouseTracking(True)
-        self.setAllColumnsShowFocus(False)
+        self.setAllColumnsShowFocus(True)
         self.setFocusPolicy(QtCore.Qt.TabFocus)
         self.setAnimated(True)
         self.itemClicked.connect(self.handleClicked)
         self.setTextElideMode(QtCore.Qt.ElideMiddle)
+        # self.setSortingEnabled(False)
         # self.setRootIsDecorated(False)
         # self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-
-        h = QtGui.QTreeWidgetItem(self)
-        h.setText(0, "Tous")
-        items = [["Groupes", [gr.name for gr in Group.all()]]]
-        for item in items:
-            p = QtGui.QTreeWidgetItem(self)
-            p.setText(0, item[0])
-            for i in item[1]:
-                c = QtGui.QTreeWidgetItem(p)
-                c.setIcon(0, QtGui.QIcon('images/group.png'))
-                c.setText(0, i)
+        # self.setItemsExpandable(True)
+        self.setAutoExpandDelay(True)
+        self.setDragEnabled(True)
+        self.refresh_()
 
     def refresh_(self):
         """
            Ne fait rien pour l'instant """
-        pass
-
-        # h = QtGui.QTreeWidgetItem(self)
-        # h.setText(0, "Tous")
-        # items = [["Groupes", [gr.name for gr in Group.all()]]]
-        # for item in items:
-        #     p = QtGui.QTreeWidgetItem(self)
-        #     # p.setIcon(0, QtGui.QIcon('images/group.png'))
-        #     p.setText(0, item[0])
-        #     for i in item[1]:
-        #         c = QtGui.QTreeWidgetItem(p)
-        #         c.setIcon(0, QtGui.QIcon('images/group.png'))
-        #         c.setText(0, i)
+        self.clear()
+        items = {"Tous": []}
+        items.update({"Groupes": [gr.name for gr in Group.all()]})
+        print items
+        for item in items:
+            treeWidget = QtGui.QTreeWidgetItem(self)
+            treeWidget.setText(0, item)
+            for i in items[item]:
+                c = QtGui.QTreeWidgetItem(treeWidget)
+                c.setIcon(0, QtGui.QIcon('images/group.png'))
+                c.setText(0, i)
 
 
     def handleClicked(self, item, column):
