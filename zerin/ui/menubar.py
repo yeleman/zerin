@@ -23,8 +23,8 @@ class MenuBarTransfer(QtGui.QMenuBar, ZWidget):
         menu_exit = QtGui.QAction(u"Quitter", self)
         menu_exit.setShortcut("Ctrl+Q")
         menu_exit.setToolTip("Quitter l'application")
-        self.connect(menu_exit, QtCore.SIGNAL("triggered()"), self.parentWidget(),
-                                          QtCore.SLOT("close()"))
+        self.connect(menu_exit, QtCore.SIGNAL("triggered()"),
+                     self.parentWidget(), QtCore.SLOT("close()"))
         file_.addAction(menu_exit)
 
         # Help
@@ -46,11 +46,10 @@ class MenuBarTransfer(QtGui.QMenuBar, ZWidget):
         adressbook = self.addMenu(u"Carnet d'adresse")
         adressbook.addAction(QtGui.QIcon('images/help.png'), "Ajouter contact",
                                     self.goto_add_contact)
-        adressbook.addAction(QtGui.QIcon('images/help.png'), "Recherher contact",
-                                    self.goto_search_contact)
-        adressbook.addAction(QtGui.QIcon('images/help.png'), "Supprimer contact",
-                                    self.goto_delete_contact)
-
+        adressbook.addAction(QtGui.QIcon('images/help.png'),
+                             "Recherher contact", self.goto_search_contact)
+        adressbook.addAction(QtGui.QIcon('images/help.png'),
+                             "Supprimer contact", self.goto_delete_contact)
 
     #Add contact
     def goto_add_contact(self):

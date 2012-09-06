@@ -5,7 +5,7 @@
 from PySide import QtGui, QtCore
 from datetime import datetime
 from common import ZWidget, ZPageTitle, ZTableWidget, Button, ZBoxTitle
-from database import Transfer, Contact
+from database import Transfer, PhoneNumber, Operator
 
 
 class HomeViewWidget(ZWidget):
@@ -74,65 +74,56 @@ class HomeViewWidget(ZWidget):
 
         number = self.number.text().replace('.', '')
 
-        contact = self.search_contact(number)
-        if contact and contact.phone.operator.slug == 'orange':
-            self.send_orange(contact, number)
-            number = None
-        elif contact and contact.phone.operator.slug == 'malitel':
-            self.send_malitel(contact, number)
-            number = None
+        phonenumber = self.verification_number(number)
 
-        if number:
-            slug =self.verification_number(number)
-
-        if number and slug == 'orange':
-            self.send_orange(contact, number)
-        elif number and slug == 'malitel':
-            self.send_malitel(contact, number)
-
-
-
+        if phonenumber.operator.slug == 'orange':
+            self.send_orange(phonenumber)
+        elif phonenumber.operator.slug == 'malitel':
+            self.send_malitel(phonenumber)
 
     def verification_number(self, number):
-        slug = ""
-        if number.startswith('7'):
-            slug = 'orange'
-        if number.startswith('6'):
-            slug = 'malitel'
-        return slug
-
-    def search_contact(self, number):
-
+        """ Check number """
         try:
-            contact = Contact.filter(phone__number=number).get()
+            return PhoneNumber.get(number=number)
         except:
-            contact = None
+            phonenumber = PhoneNumber()
+            phonenumber.number = number
+            if number.startswith('7'):
+                phonenumber.operator = Operator.get(slug='orange')
+            elif number.startswith('6'):
+                phonenumber.operator = Operator.get(slug='malitel')
+            phonenumber.contact = None
+            phonenumber.save()
 
-        return contact
+            return phonenumber
 
+    def send_orange(self, number):
+        """ Transfer credit Orange """
 
-    def send_orange(self, contact, number):
-
-        self.transfer_credit(contact, number)
+        self.transfer_credit(number)
         return u"function Orange"
 
-    def send_malitel(self, contact, number):
-        """  """
-        self.transfer_credit(contact, number)
+    def send_malitel(self, number):
+        """ Transfer credit Malitel """
+        self.transfer_credit(number)
         return u"function Malitel"
 
-
-    def transfer_credit(self, contact, number):
+    def transfer_credit(self, number):
         """ transfer amount credit"""
         date_send = datetime.now()
-        transfer = Transfer(amount=self.amount.text(), contact=contact,
-                            date=date_send, number=number)
+        amount =  self.amount.text()
+        if amount:
+            transfer = Transfer(amount=self.amount.text(), number=number,
+                                date=date_send)
 
-        transfer.save()
-        self.number.setText(u"70.00.00.00")
-        self.amount.clear()
-        self.table.refresh_()
-        return True
+            transfer.save()
+
+            self.number.setText(u"70.00.00.00")
+            self.amount.clear()
+            self.table.refresh_()
+        else:
+            print 'donner le montant'
+
 
 class OperationTableWidget(ZTableWidget):
 
@@ -151,7 +142,7 @@ class OperationTableWidget(ZTableWidget):
         self.refresh(True)
 
     def set_data_for(self):
-        self._data = [(operation.amount, operation.full_name(),\
+        self._data = [(operation.number.full_name(), operation.amount,
                       operation.date.strftime(u'%d-%m-%Y')) \
-                      for operation in Transfer.select()]
+                      for operation in Transfer.select().order_by('date')]
 
