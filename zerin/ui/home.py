@@ -4,7 +4,8 @@
 
 from PySide import QtGui, QtCore
 from datetime import datetime
-from common import ZWidget, ZPageTitle, ZTableWidget, Button, ZBoxTitle
+from common import ZWidget, ZPageTitle, ZTableWidget, Button
+from utils import formatted_number, raise_success, raise_error
 from database import Transfer, PhoneNumber, Operator
 
 
@@ -16,21 +17,10 @@ class HomeViewWidget(ZWidget):
                                                         *args, **kwargs)
 
         self.table = OperationTableWidget(parent=self)
-        hbox = QtGui.QHBoxLayout()
-        hbox.addWidget(self.table)
-
-        splitter = QtGui.QSplitter(QtCore.Qt.Horizontal)
-
-        splitter_left = QtGui.QSplitter(QtCore.Qt.Vertical)
-        splitter_right = QtGui.QSplitter(QtCore.Qt.Vertical)
-
-        splitter_left.addWidget(ZBoxTitle(u"Les groups"))
-        splitter_left.addWidget(self.table)
-
-        splitter.addWidget(splitter_left)
-        splitter.addWidget(splitter_right)
-
-        hbox.addWidget(splitter)
+        table_box = QtGui.QVBoxLayout()
+        self.title_table = ZPageTitle(u"Historique des transferts")
+        table_box.addWidget(self.title_table)
+        table_box.addWidget(self.table)
 
         self.parent = parent
         self.parentWidget().setWindowTitle(u"Bienvenu sur Zerin")
@@ -43,31 +33,31 @@ class HomeViewWidget(ZWidget):
         self.number.setAlignment(QtCore.Qt.AlignCenter)
         self.number.setFont(QtGui.QFont("Arial", 18))
         self.number.setText(u"70.00.00.00")
-
+        self.number.setToolTip(u"Taper le nom ou le numéro de "
+                                     u"téléphone du beneficiare")
 
         self.amount = QtGui.QLineEdit()
         self.amount.setValidator(QtGui.QIntValidator())
+        self.amount.setToolTip(u"Taper le montant du transfert")
+
         butt = Button(u"OK")
         butt.clicked.connect(self.add_operation)
 
-
         formbox = QtGui.QGridLayout()
-        formbox.addWidget(QtGui.QLabel((u'Numero')), 0, 0)
-        formbox.addWidget(QtGui.QLabel((u'Montant')), 0, 1)
-        formbox.addWidget(self.number, 1, 0)
-        formbox.addWidget(self.amount, 1, 1)
-        formbox.addWidget(butt, 1, 2)
+        formbox.addWidget(self.number, 0, 0)
+        formbox.addWidget(self.amount, 0, 1)
+        formbox.addWidget(butt, 0, 2)
 
-        vbox = QtGui.QVBoxLayout()
+        transfer_box = QtGui.QVBoxLayout()
         formbox.setSizeConstraint(QtGui.QLayout.SetFixedSize)
 
-        vbox.addWidget(self.title)
+        transfer_box.addWidget(self.title)
 
-        vbox.addLayout(formbox)
+        transfer_box.addLayout(formbox)
         formbox.addWidget(butt)
 
-        vbox.addLayout(hbox)
-        self.setLayout(vbox)
+        transfer_box.addLayout(table_box)
+        self.setLayout(transfer_box)
 
     def add_operation(self):
         ''' add operation '''
@@ -111,7 +101,7 @@ class HomeViewWidget(ZWidget):
     def transfer_credit(self, number):
         """ transfer amount credit"""
         date_send = datetime.now()
-        amount =  self.amount.text()
+        amount = self.amount.text()
         if amount:
             transfer = Transfer(amount=self.amount.text(), number=number,
                                 date=date_send)
@@ -121,28 +111,32 @@ class HomeViewWidget(ZWidget):
             self.number.setText(u"70.00.00.00")
             self.amount.clear()
             self.table.refresh_()
+            raise_success(u'Confirmation', u'Transfert effectué')
         else:
-            print 'donner le montant'
+            raise_error(u"Erreur Montant",
+                        u"Donner un montant s'il vous plait.")
 
 
 class OperationTableWidget(ZTableWidget):
-
+    """ display all transfers """
     def __init__(self, parent, *args, **kwargs):
 
         ZTableWidget.__init__(self, parent=parent, *args, **kwargs)
-        self.header = [(u'Contact'), (u'Montant'), \
-                       (u'Heure')]
+        self.max_width = 450
+        self.header = [u'Contact', u'Montant', u'Heure', 'Status']
 
         self.set_data_for()
         self.refresh(True)
 
     def refresh_(self):
+        """ refresh table """
         self._reset()
         self.set_data_for()
         self.refresh(True)
 
     def set_data_for(self):
-        self._data = [(operation.number.full_name(), operation.amount,
-                      operation.date.strftime(u'%d-%m-%Y')) \
+        """ completed the table """
+        self._data = [(operation.number.full_name(),
+                       formatted_number(operation.amount) + " fcfa",
+                      operation.date.strftime(u'%H:%M')) \
                       for operation in Transfer.select().order_by('date')]
-
