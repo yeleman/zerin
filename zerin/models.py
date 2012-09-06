@@ -54,8 +54,8 @@ class PhoneNumber(BaseModel):
     operator = peewee.ForeignKeyField(Operator, verbose_name=u"Opérateur",
                                                       related_name='operators')
     contact = peewee.ForeignKeyField(Contact, verbose_name=u"Téléphone",
-                                                        related_name='contacts',
-                                    blank=True, null=True)
+                                              related_name='contacts',
+                                              blank=True, null=True)
 
     def __unicode__(self):
         return u"%(number)s" % {u"number": self.number}
@@ -63,7 +63,7 @@ class PhoneNumber(BaseModel):
     def full_name(self):
         try:
             return self.contact.name
-        except :
+        except:
             return self.number
 
 
@@ -87,6 +87,7 @@ class Transfer(BaseModel):
     def __unicode__(self):
         return u"%(amount)s/%(number)s" % {"number": self.number,
                                            "amount": self.amount}
+
 
 class Settings(BaseModel):
     password = peewee.CharField(max_length=30, verbose_name=(u"Nom"))

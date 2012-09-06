@@ -77,13 +77,13 @@ class OperationWidget(ZWidget):
         editbox.addWidget(self.search_field, 0, 0)
 
         bicon = QtGui.QIcon.fromTheme('search', QtGui.QIcon(''))
-        search_but =QtGui.QPushButton(bicon, u"")
+        search_but = QtGui.QPushButton(bicon, u"")
         search_but.clicked.connect(self.search)
         editbox.addWidget(search_but, 0, 1)
         editbox.addWidget(self.empty, 1, 0)
 
         bicon = QtGui.QIcon.fromTheme('document-new', QtGui.QIcon(''))
-        addgroup_but =QtGui.QPushButton(bicon, u"Nouveau groupe")
+        addgroup_but = QtGui.QPushButton(bicon, u"Nouveau groupe")
         addgroup_but.clicked.connect(self.addgroup)
 
         editbox.addWidget(addgroup_but, 2, 0)
@@ -106,8 +106,6 @@ class OperationWidget(ZWidget):
         completer.setCompletionMode(QtGui.QCompleter.UnfilteredPopupCompletion)
 
         self.search_field.setCompleter(completer)
-
-        #
 
     def search(self):
 
@@ -135,9 +133,11 @@ class OperationWidget(ZWidget):
     def addgroup(self):
         """ Affiche un QDialog qui permet d'ajouter un nouveau groupe """
         try:
-            self.parent.open_dialog(GroupViewWidget, modal=True, table_group=self.parent)
+            self.parent.open_dialog(GroupViewWidget, modal=True,
+                                                      table_group=self.parent)
         except:
             raise
+
 
 class GroupTableWidget(QtGui.QTreeWidget):
     """affiche tout le nom de tous les groupes"""
@@ -166,6 +166,7 @@ class GroupTableWidget(QtGui.QTreeWidget):
         self.clear()
         items = {"Tous": []}
         items.update({"Groupes": [gr.name for gr in Group.all()]})
+
         for title in items:
             treeWidget = QtGui.QTreeWidgetItem(self)
             treeWidget.setText(0, title)
@@ -173,7 +174,6 @@ class GroupTableWidget(QtGui.QTreeWidget):
                 t_child = QtGui.QTreeWidgetItem(treeWidget)
                 t_child.setIcon(0, QtGui.QIcon('images/group.png'))
                 t_child.setText(0, group_name)
-
 
     def handleClicked(self, item, column):
         self.gr = item.data(column, 0)
@@ -204,7 +204,7 @@ class ContactTableWidget(ZTableWidget):
 
         if search:
             self.data = [("", tel.contact.name) for tel in PhoneNumber.all()
-                                            if search.contact==tel.contact]
+                                            if search.contact == tel.contact]
         else:
             self.data = [("", contact.name) for contact in Contact.all()]
         if group:
@@ -239,8 +239,9 @@ class InfoTableWidget(ZTableWidget):
         self.refresh(True)
 
     def set_data_for(self, number):
-        self.data = [(tel.contact.name, tel.number) for tel in PhoneNumber.all()
-                                            if number.contact==tel.contact]
+        self.data = [(tel.contact.name, tel.number)
+                      for tel in PhoneNumber.all()
+                                            if number.contact == tel.contact]
 
 
 class TransfTableWidget(ZTableWidget):
@@ -267,6 +268,6 @@ class TransfTableWidget(ZTableWidget):
             self.data = [(transf.number,
                           transf.date.strftime(u"%d/%m/%Y a %Hh:%Mmn"),
                           transf.amount) for transf in Transfer.all()\
-                           if transf.number.contact==number.contact]
+                           if transf.number.contact == number.contact]
         except AttributeError:
             pass

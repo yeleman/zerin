@@ -29,6 +29,7 @@ class ZWidget(QtGui.QWidget):
         return self.parentWidget().open_dialog(dialog, \
                                                modal=modal, *args, **kwargs)
 
+
 class ZPageTitle(QtGui.QLabel):
     """ """
 
@@ -36,10 +37,6 @@ class ZPageTitle(QtGui.QLabel):
         super(ZPageTitle, self).__init__(*args, **kwargs)
 
         self.setAlignment(QtCore.Qt.AlignCenter)
-        # self.setStyleSheet("color: bleu; font: 20 10pt"
-        #                    " \"Tlwg Typist\" ; border:1px solid bleu;\
-        #                    border-radius: 14px 14px 4px 4px;font-variant: small-caps;")
-
 
 
 class ZTableWidget(QtGui.QTableWidget, ZWidget):
@@ -80,20 +77,26 @@ class ZTableWidget(QtGui.QTableWidget, ZWidget):
     data = property(getdata, setdata)
 
     def max_width():
+
         def fget(self):
             return self._max_width
+
         def fset(self, value):
             self._max_width = value
+
         def fdel(self):
             del self._max_width
         return locals()
     max_width = property(**max_width())
 
     def stretch_columns():
+
         def fget(self):
             return self._stretch_columns
+
         def fset(self, value):
             self._stretch_columns = value
+
         def fdel(self):
             del self._stretch_columns
         return locals()
@@ -146,12 +149,12 @@ class ZTableWidget(QtGui.QTableWidget, ZWidget):
         if resize:
             self.resizeColumnsToContents()
 
-        contented_width = 50 ##self.width()
+        contented_width = 50
         for ind in range(0, self.horizontalHeader().count()):
             contented_width += self.horizontalHeader().sectionSize(ind)
         self.verticalHeader().adjustSize()
         # get content-sized with of header
-        extra_width = self.max_width - contented_width ## - vheader_width
+        extra_width = self.max_width - contented_width
 
         # space filled-up.
         if extra_width:
@@ -166,7 +169,9 @@ class ZTableWidget(QtGui.QTableWidget, ZWidget):
                 indiv_extra = 0
 
             for colnum in to_stretch:
-                self.horizontalHeader().resizeSection(colnum, self.horizontalHeader().sectionSize(colnum) + indiv_extra)
+                self.horizontalHeader().resizeSection(colnum,
+                                self.horizontalHeader().sectionSize(colnum)
+                                                                + indiv_extra)
 
         self.horizontalHeader().update()
         self.update()
@@ -236,6 +241,7 @@ class ZTableWidget(QtGui.QTableWidget, ZWidget):
 
     def click_item(self, row, column, *args):
         pass
+
 
 class ZBoxTitle(QtGui.QLabel):
     """ """

@@ -5,7 +5,8 @@
 from random import randint
 
 from datetime import datetime
-from models import  Group, Operator, PhoneNumber, Contact, ContactGroup, Transfer
+from models import  (Group, Operator, PhoneNumber, Contact,
+                     ContactGroup, Transfer)
 
 
 print "Group"
@@ -21,7 +22,7 @@ for i in group_list:
 print "Operator"
 list_op = [('orange', u'Orange'), ('malitel', u'Malitel')]
 
-for i , n in list_op:
+for i, n in list_op:
     try:
         Operator(slug=i, name=n).save()
         print i, n, "............. OK"
@@ -80,7 +81,9 @@ for i in range(1, 15):
                  date=datetime(2012, 11, randint(1, 29), randint(1, 23),
                                randint(1, 59), randint(1, 59)),
                  number=num).save()
-        print u"Transfert N:", i, " de ", Transfer.filter(number=num).get().number.contact.name, "............. OK"
+        print (u"Transfert N:", i, " de ",
+                Transfer.filter(number=num).get().number.contact.name,
+                "............. OK")
     except:
         raise
         print i, "no"

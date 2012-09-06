@@ -55,10 +55,12 @@ class MenuBarTransfer(QtGui.QMenuBar, ZWidget):
     def goto_add_contact(self):
         QtGui.QMessageBox.about(self, u"Ajouter contact",
                                 u"<h3>Pour ajouter un contact</h3>")
+
     #Search contact
     def goto_search_contact(self):
         QtGui.QMessageBox.about(self, u"Recherche contact",
                                 u"<h3>Pour chercher un contact</h3>")
+
     #Delete contact
     def goto_delete_contact(self):
         QtGui.QMessageBox.about(self, u"Supprimer contact",
@@ -73,14 +75,17 @@ class MenuBarTransfer(QtGui.QMenuBar, ZWidget):
     def goto_help(self):
 
         self.open_dialog(HTMLEditor, modal=True)
+
     #About
     def goto_about(self):
         QtGui.QMessageBox.about(self, u"À propos",
                                 u"<h2>PACH TECH </h2><br/>"
-                                u"<i>Logiciel de gestion pour les vendeurs de nsɛrɛ et paani (ex. cyber café)</i><br/>"
+                                u"<i>Logiciel de gestion pour les vendeurs"
+                                u" de nsɛrɛ et paani (ex. cyber café)</i><br/>"
                                 u"<h2>© 2012 yɛlɛman s.à.r.l</h2>"
                                 u"<ul>"
-                                    u"<li>Hippodrome, Rue 240 Porte 1068, BPE. 3713 - Bamako (Mali)</li>"
+                                    u"<li>Hippodrome, Rue 240 Porte 1068,"
+                                    u" BPE. 3713 - Bamako (Mali)</li>"
                                     u"<li><b>Tél. :</b> (223) 20 21 05 87</li>"
                                     u"<li><b>E-mail :</b>info@yeleman.com</li>"
                                     u"<li><b>Site :</b> www.yeleman.com<li>"

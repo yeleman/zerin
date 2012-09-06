@@ -12,12 +12,13 @@ ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 class HTMLEditor(QtGui.QDialog):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent=None):
         super(HTMLEditor, self).__init__(parent)
 
         self.setWindowTitle(u"Aide")
         view = PySide.QtWebKit.QWebView(parent)
 
-        view.load(QtCore.QUrl("file://%s" % os.path.join(ROOT_DIR, 'help.html')))
+        view.load(QtCore.QUrl("file://%s" % os.path.join(ROOT_DIR,
+                                                                 'help.html')))
         layout = QtGui.QVBoxLayout(self)
         layout.addWidget(view)
