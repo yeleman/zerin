@@ -1641,7 +1641,7 @@ class SelectQuery(BaseQuery):
             else:
                 alias = ''
 
-            order_by.append('%s %s' % (self.safe_combine(model, alias, field), ordering))
+            order_by.append('LOWER(%s) %s' % (self.safe_combine(model, alias, field), ordering))
 
         pieces = [select]
 

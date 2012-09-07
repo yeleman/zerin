@@ -15,7 +15,7 @@ class GroupViewWidget(QtGui.QDialog, ZWidget):
         QtGui.QDialog.__init__(self, parent, *args, **kwargs)
 
         vbox = QtGui.QVBoxLayout()
-        vbox.addWidget(ZBoxTitle(u"Ajout des groupes"))
+        vbox.addWidget(ZBoxTitle(u"Ajout d'un nouveau groupe"))
         self.parent = table_group
 
         self.name = QtGui.QLineEdit()

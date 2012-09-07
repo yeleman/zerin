@@ -10,6 +10,8 @@ from models import Contact, Transfer, ContactGroup, Group, PhoneNumber
 from common import ZWidget, ZBoxTitle, ZTableWidget
 from addgroup import GroupViewWidget
 
+ALL_CONTACTS = -1
+
 
 class ContactViewWidget(ZWidget):
     """ Shows the home page  """
@@ -30,10 +32,10 @@ class ContactViewWidget(ZWidget):
 
         splitter = QtGui.QSplitter(QtCore.Qt.Horizontal)
 
-        splitter_left = QtGui.QSplitter(QtCore.Qt.Vertical)
+        self.splitter_left = QtGui.QSplitter(QtCore.Qt.Vertical)
 
-        splitter_left.addWidget(ZBoxTitle(u"Les groupes"))
-        splitter_left.addWidget(self.table_group)
+        self.splitter_left.addWidget(ZBoxTitle(u"Les groupes"))
+        self.splitter_left.addWidget(self.table_group)
 
         splitter_details = QtGui.QSplitter(QtCore.Qt.Horizontal)
         splitter_details.addWidget(self.table_info)
@@ -49,10 +51,10 @@ class ContactViewWidget(ZWidget):
         splt_contact.addWidget(self.table_contact)
         splt_contact.resize(900, 1000)
 
-        splitter_left.addWidget(splitter_down)
+        self.splitter_left.addWidget(splitter_down)
         splitter_details.addWidget(splitter_transf)
         splt_contact.addWidget(splitter_details)
-        splitter.addWidget(splitter_left)
+        splitter.addWidget(self.splitter_left)
         splitter.addWidget(splt_contact)
 
         hbox.addWidget(splitter)
@@ -139,45 +141,58 @@ class OperationWidget(ZWidget):
             raise
 
 
-class GroupTableWidget(QtGui.QTreeWidget):
+class GroupTableWidget(QtGui.QListWidget):
     """affiche tout le nom de tous les groupes"""
 
     def __init__(self, parent, *args, **kwargs):
         super(GroupTableWidget, self).__init__(parent)
         self.parent = parent
-        self.setHeaderHidden(True)
-        self.setAlternatingRowColors(True)
-        self.setMouseTracking(True)
-        self.setAllColumnsShowFocus(True)
-        self.setFocusPolicy(QtCore.Qt.TabFocus)
-        self.setAnimated(True)
-        self.itemClicked.connect(self.handleClicked)
-        self.setTextElideMode(QtCore.Qt.ElideMiddle)
-        # self.setSortingEnabled(False)
-        # self.setRootIsDecorated(False)
-        # self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        # self.setItemsExpandable(True)
-        self.setAutoExpandDelay(True)
-        self.setDragEnabled(True)
+        self.setAutoScroll(True)
+        self.setAutoFillBackground(True)
+        self.itemSelectionChanged.connect(self.handleClicked)
         self.refresh_()
 
     def refresh_(self):
         """ Rafraichir la liste des groupes"""
         self.clear()
-        items = {"Tous": []}
-        items.update({"Groupes": [gr.name for gr in Group.all()]})
+        self.addItem(GroupQListWidgetItem(ALL_CONTACTS))
+        for group in Group.filter().order_by('name'):
+            self.addItem(GroupQListWidgetItem(group))
 
-        for title in items:
-            treeWidget = QtGui.QTreeWidgetItem(self)
-            treeWidget.setText(0, title)
-            for group_name in items[title]:
-                t_child = QtGui.QTreeWidgetItem(treeWidget)
-                t_child.setIcon(0, QtGui.QIcon('images/group.png'))
-                t_child.setText(0, group_name)
+    def handleClicked(self):
+        group = self.currentItem()
+        self.parent.table_contact.refresh_(group_id=group.group_id)
 
-    def handleClicked(self, item, column):
-        self.gr = item.data(column, 0)
-        self.parent.table_contact.refresh_(group=self.gr)
+
+class GroupQListWidgetItem(QtGui.QListWidgetItem):
+
+    def __init__(self, group):
+        super(GroupQListWidgetItem, self).__init__()
+
+        self.group = group
+
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap("images/group.png"),
+                                      QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.setIcon(icon)
+        self.init_text()
+
+    def init_text(self):
+        try:
+            self.setText(self.group.name)
+        except AttributeError:
+            font = QtGui.QFont()
+            font.setBold(True)
+            self.setFont(font)
+            self.setTextAlignment(QtCore.Qt.AlignHCenter|QtCore.Qt.AlignVCenter|QtCore.Qt.AlignCenter)
+            self.setText(u"Tous")
+
+    @property
+    def group_id(self):
+        try:
+            return self.group.id
+        except AttributeError:
+            return self.group
 
 
 class ContactTableWidget(ZTableWidget):
@@ -195,21 +210,26 @@ class ContactTableWidget(ZTableWidget):
         self.set_data_for()
         self.refresh(True)
 
-    def refresh_(self, group=None, search=None):
+    def refresh_(self, group_id=None, search=None):
         self._reset()
-        self.set_data_for(group=group, search=search)
+        self.set_data_for(group_id=group_id, search=search)
         self.refresh(True)
 
-    def set_data_for(self, group=None, search=None):
+    def set_data_for(self, group_id=None, search=None):
 
         if search:
-            self.data = [("", tel.contact.name) for tel in PhoneNumber.all()
+            self.data = [("", tel.contact.name)
+                          for tel in PhoneNumber.filter().group_by('contact')
                                             if search.contact == tel.contact]
         else:
             self.data = [("", contact.name) for contact in Contact.all()]
-        if group:
-            self.data = [("", contact_gp.contact.name) for contact_gp in
-                                        ContactGroup.filter(group__name=group)]
+
+        if group_id:
+            if group_id == ALL_CONTACTS:
+                qs = ContactGroup.filter().group_by('contact')
+            else:
+                qs = ContactGroup.filter(group__id=group_id)
+            self.data = [("", contact_gp.contact.name) for contact_gp in qs]
 
     def _item_for_data(self, row, column, data, context=None):
         if column == 0:
