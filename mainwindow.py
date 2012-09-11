@@ -6,6 +6,8 @@ from PySide import QtCore
 from PySide import QtGui
 from PySide import QtWebKit
 
+from menubar import MenuBarTransfer
+
 
 class ZWebView(QtWebKit.QWebView):
 
@@ -25,6 +27,8 @@ class MainWindow(QtGui.QMainWindow):
 
         self.change_context(ZWebView)
 
+        self.menubar = MenuBarTransfer(self)
+        self.setMenuBar(self.menubar)
         self.startTimer(3000) # 3s
 
     def change_context(self, context_widget, *args, **kwargs):

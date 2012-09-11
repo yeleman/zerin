@@ -2,13 +2,24 @@
 
 import json
 
-from flask import Flask, request
+from flask import Flask, request, render_template
 app = Flask(__name__)
+
+
+@app.route('/addressbook')
+def addressbook():
+
+    users = {
+        'fad': {'name': u"Ibrahima Fadiga", 'age': 2},
+        'reg': {'name': u"Renaud Gaudin", 'age': 3},
+    }
+    return render_template('addressbook.html', users=users)
 
 
 @app.route('/')
 def index():
-    return open('templates/test.html', 'r').read()
+    dic = {}
+    return render_template('test.html', dic=dic)
 
 
 @app.route('/test')
@@ -24,7 +35,6 @@ def test():
 @app.route('/info', methods=['POST'])
 def info(*args, **kwargs):
     from pprint import pprint as pp ; pp(request.form)
-    
 
     name = request.form.get('name')
     id_ = request.form.get('id')
@@ -34,7 +44,6 @@ def info(*args, **kwargs):
         'reg': {'name': u"Renaud Gaudin", 'age': 3},
     }
     return json.dumps(users.get(name))
-
 
 if __name__ == '__main__':
     app.run(debug=True)
