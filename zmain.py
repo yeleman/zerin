@@ -3,6 +3,7 @@
 # Maintainer: Fad
 
 import sys
+import random
 
 import desub
 from PySide import QtGui
@@ -14,22 +15,18 @@ from mainwindow import MainWindow
 def main():
 
     setup()
-    http = desub.join(['/home/fad/src/envs/zerin/bin/python', './http.py'])
+    http_port = random.randrange(3000, 4999)
+    http = desub.join(['./http.py', str(http_port)])
     http.start()
 
     app = QtGui.QApplication(sys.argv)
 
     window = MainWindow()
+    window.base_url = u'http://127.0.0.1:%d' % http_port
     window.show()
 
     ret = app.exec_()
-    print('before stop')
-    print(http.is_running())
-    print(http.pid)
     http.stop()
-    print('after stop')
-    print(http.is_running())
-    print(http.pid)
     sys.exit(ret)
 
 if __name__ == "__main__":

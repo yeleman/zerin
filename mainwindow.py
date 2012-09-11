@@ -19,6 +19,8 @@ class MainWindow(QtGui.QMainWindow):
     """  """
     def __init__(self):
         self.resize_subscribers = []
+        self.base_url = u'http://127.0.0.1:5000'
+
         QtGui.QMainWindow.__init__(self)
 
         # self.resize(1200, 600)
@@ -54,5 +56,5 @@ class MainWindow(QtGui.QMainWindow):
         self.resize_subscribers.append(widget)
 
     def timerEvent(self, event):
-        self.view_widget.load(QtCore.QUrl(u"http://localhost:5000"))
+        self.view_widget.load(QtCore.QUrl(self.base_url))
         self.killTimer(event.timerId())
