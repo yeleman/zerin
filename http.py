@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return open('test.html', 'r').read()
+    return open('templates/test.html', 'r').read()
 
 
 @app.route('/test')
@@ -19,6 +19,7 @@ def test():
         {'number': '65 73 10 76', 'name': 'Alou DOlo', 'status': 'delivered'},
     ]}
     return json.dumps(data)
+
 
 @app.route('/info', methods=['POST'])
 def info(*args, **kwargs):
