@@ -18,6 +18,9 @@ class BaseModel(peewee.Model):
     def all(cls):
         return list(cls.select())
 
+    def to_dict(self):
+        return {'id': self.id}
+
 
 class Group(BaseModel):
     """ Group of contacts """
@@ -26,6 +29,11 @@ class Group(BaseModel):
 
     def __unicode__(self):
         return u"%(name)s" % {"name": self.name}
+
+    def to_dict(self):
+        d = super(Group, self).to_dict()
+        d.update({'name': self.name})
+        return d
 
 
 class Operator(BaseModel):
@@ -37,6 +45,12 @@ class Operator(BaseModel):
     def __unicode__(self):
         return u"%(name)s" % {"name": self.name}
 
+    def to_dict(self):
+        d = super(Operator, self).to_dict()
+        d.update({'name': self.name,
+                  'slug': self.slug})
+        return d
+
 
 class Contact(BaseModel):
     """ Contact address book """
@@ -45,6 +59,17 @@ class Contact(BaseModel):
 
     def __unicode__(self):
         return u"%(name)s" % {"name": self.name.title()}
+
+    def to_dict(self, verbose=False):
+        d = super(Contact, self).to_dict()
+        d.update({'name': self.name})
+        if verbose:
+            d.update({'numbers': [number.to_dict() 
+                                  for number 
+                                  in PhoneNumber.filter(contact=self) \
+                                                .group_by('contact')],
+                      'groups': [contact_group.group.to_dict() for contact_group in ContactGroup.filter(contact=self)]})
+        return d
 
 
 class PhoneNumber(BaseModel):
@@ -65,6 +90,12 @@ class PhoneNumber(BaseModel):
             return self.contact.name
         except:
             return self.number
+
+    def to_dict(self):
+        d = super(PhoneNumber, self).to_dict()
+        d.update({'number': self.number,
+                  'operator': self.operator.to_dict()})
+        return d
 
 
 class ContactGroup(BaseModel):
