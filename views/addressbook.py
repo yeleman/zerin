@@ -22,8 +22,6 @@ def addressbook_contact(contact_id):
     data = {'contact': Contact.get(id=int(contact_id)).to_dict(True)}
     return json.dumps(data)
 
-
-
 def addressbook_contactlist(group_id):
     try:
         group_id = int(group_id)
@@ -47,3 +45,12 @@ def addressbook_transfer(contact_id):
     data = {'transfers': [tr.to_dict() for tr in Transfer.filter(number__in=numbers)]}
     return json.dumps(data)
  
+
+def addressbook_add_contact_to_group(group_id, contact_id):
+    contact = Contact.get(id=int(contact_id))
+    group = Group.get(id=int(group_id))
+    if ContactGroup.filter(contact=contact, group=group).count():
+        return json.dumps(False)
+    cg = ContactGroup(contact=contact, group=group)
+    cg.save()
+    return json.dumps(True)
