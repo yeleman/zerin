@@ -1,0 +1,66 @@
+var ALLCONTACTS_GROUP = -1;
+
+function addJQ_addressbook_group_list() {
+    $.getJSON('/addressbook/group_list', function(data) {
+        $.each(data.groups, function(num, group) {
+            row = "<li><a href='#' group_id=" + group.id +">" + group.name + "</a></li>";
+            $("#groups").append(row);
+          });
+        addJQ_addressbook_contact_list();
+        load_contact_list_from_group_id(ALLCONTACTS_GROUP);
+    });
+}
+
+function load_contact_list_from_group_id(group_id) {
+    var group_link = $("#groups li a[group_id="+group_id+"]");
+    $(group_link).parent().parent().children('li').not($(group_link).parent()).removeClass('active');
+    $(group_link).parent().addClass('active');
+
+    $.getJSON('/addressbook/contact_for/' + group_id, function(data) {
+        $("#contacts_table").empty();
+        $.each(data.contacts, function(num, contact) {
+            row = "<tr><td><a href='#' contact_id=" + contact.id +">" + contact.name + "</a></td></tr>";
+            $("#contacts_table").append(row);
+        });
+        addJQ_addressbook_contact_info();
+    });
+}
+
+function addJQ_addressbook_contact_list() {
+    $("#groups li a").click(function() {
+        group_id = $(this).attr('group_id');
+        load_contact_list_from_group_id(group_id);
+    });
+}
+
+function addJQ_addressbook_contact_info() {
+     $("#contacts_table a").click(function() {
+        contact_id = $(this).attr('contact_id');
+        $.getJSON('/addressbook/contact/' + contact_id, function(data) {
+            $("#contact_info h2").html(data.contact.name);
+            var edit_field = $("#contact_info input#edit_contact_name");
+            edit_field.attr('value', data.contact.name);
+            $("#contact_info ul").empty();
+            $.each(data.contact.numbers, function(num, phonenum) {
+                row = "<li>" + phonenum.display_number + ' (' + phonenum.operator.name + ')' + "</li>";
+                $("#contact_info ul").append(row);
+            });
+            add_JQ_addressbook_contact_fields_edit();
+        });
+
+        $.getJSON('/addressbook/transfer_for/' + contact_id, function(data) {
+            $("#transfer").empty();
+            $.each(data.transfers, function(num, transfer) {
+                row = "<tr><td>" + transfer.number.display_number + "</td><td>"+transfer.display_date+"</td><td>"+transfer.amount + " FCFA" + "</td></tr>";
+                $("#transfer").append(row);
+            });
+        });
+    });
+}
+
+function add_JQ_addressbook_contact_fields_edit() {
+    $("#contact_info h2").dblclick(function() {
+        $("input#edit_contact_name").toggle();
+        $(this).toggle();
+    });
+}

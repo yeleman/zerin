@@ -2,9 +2,11 @@
 # encoding=utf-8
 # maintainer: Fad
 
-
 import peewee
 
+from utils import phone_number_formatter
+
+DATE_FMT = u'%A %d %B %Y'
 DB_FILE = "zerin.db"
 dbh = peewee.SqliteDatabase(DB_FILE)
 
@@ -28,7 +30,10 @@ class Group(BaseModel):
     name = peewee.CharField(max_length=30, verbose_name=u"Nom", unique=True)
 
     def __unicode__(self):
-        return u"%(name)s" % {"name": self.name}
+        return u"%(name)s" % {"name": self.display_name()}
+
+    def display_name(self):
+        return self.name.title()
 
     def to_dict(self):
         d = super(Group, self).to_dict()
@@ -58,17 +63,20 @@ class Contact(BaseModel):
     name = peewee.CharField(max_length=100, verbose_name=u"Nom", unique=True)
 
     def __unicode__(self):
-        return u"%(name)s" % {"name": self.name.title()}
+        return u"%(name)s" % {"name": self.display_name()}
+
+    def display_name(self):
+        return self.name.title()
 
     def to_dict(self, verbose=False):
         d = super(Contact, self).to_dict()
-        d.update({'name': self.name})
+        d.update({'name': self.display_name()})
         if verbose:
-            d.update({'numbers': [number.to_dict() 
-                                  for number 
-                                  in PhoneNumber.filter(contact=self) \
-                                                .group_by('contact')],
-                      'groups': [contact_group.group.to_dict() for contact_group in ContactGroup.filter(contact=self)]})
+            d.update({'numbers': [number.to_dict() for number in PhoneNumber \
+                                                        .filter(contact=self)],
+                      'groups': [contact_group.group.to_dict()
+                                 for contact_group in ContactGroup \
+                                                      .filter(contact=self)]})
         return d
 
 
@@ -85,6 +93,9 @@ class PhoneNumber(BaseModel):
     def __unicode__(self):
         return u"%(number)s" % {u"number": self.number}
 
+    def display_number(self):
+        return phone_number_formatter(self.number)
+
     def full_name(self):
         try:
             return self.contact.name
@@ -94,7 +105,8 @@ class PhoneNumber(BaseModel):
     def to_dict(self):
         d = super(PhoneNumber, self).to_dict()
         d.update({'number': self.number,
-                  'operator': self.operator.to_dict()})
+                  'operator': self.operator.to_dict(),
+                  'display_number': self.display_number()})
         return d
 
 
@@ -118,6 +130,14 @@ class Transfer(BaseModel):
     def __unicode__(self):
         return u"%(amount)s/%(number)s" % {"number": self.number,
                                            "amount": self.amount}
+
+    def to_dict(self):
+        d = super(Transfer, self).to_dict()
+        d.update({'number': self.number.to_dict(),
+                  'amount': self.amount,
+                  'date': self.date.isoformat(),
+                  'display_date': self.date.strftime(DATE_FMT)})
+        return d
 
 
 class Settings(BaseModel):

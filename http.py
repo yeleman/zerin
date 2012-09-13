@@ -6,12 +6,16 @@ from flask import Flask
 
 app = Flask('zerin_server')
 
-from views.addressbook import addressbook_main, addressbook_grouplist, addressbook_contactlist
+from views.addressbook import (addressbook_main, addressbook_grouplist,
+                               addressbook_contactlist, addressbook_contact,
+                               addressbook_transfer)
 from views.transfer import transfer_main, transfer_test, transfer_info
 
 app.route('/addressbook')(addressbook_main)
 app.route('/addressbook/group_list')(addressbook_grouplist)
+app.route('/addressbook/contact/<contact_id>')(addressbook_contact)
 app.route('/addressbook/contact_for/<group_id>')(addressbook_contactlist)
+app.route('/addressbook/transfer_for/<contact_id>')(addressbook_transfer)
 app.route('/')(transfer_main)
 app.route('/test')(transfer_test)
 app.route('/info', methods=['POST'])(transfer_info)
