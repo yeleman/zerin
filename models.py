@@ -37,7 +37,7 @@ class Group(BaseModel):
 
     def to_dict(self):
         d = super(Group, self).to_dict()
-        d.update({'name': self.name})
+        d.update({'name': self.name, 'display_name': self.display_name()})
         return d
 
 
@@ -50,10 +50,13 @@ class Operator(BaseModel):
     def __unicode__(self):
         return u"%(name)s" % {"name": self.name}
 
+    def display_name(self):
+        return self.name.title()
+
     def to_dict(self):
         d = super(Operator, self).to_dict()
-        d.update({'name': self.name,
-                  'slug': self.slug})
+        d.update({'display_name': self.display_name(),
+                  'name': self.name, 'slug': self.slug})
         return d
 
 
@@ -70,7 +73,8 @@ class Contact(BaseModel):
 
     def to_dict(self, verbose=False):
         d = super(Contact, self).to_dict()
-        d.update({'name': self.display_name()})
+        d.update({'display_name': self.display_name(),
+                  'name': self.name})
         if verbose:
             d.update({'numbers': [number.to_dict() for number in PhoneNumber \
                                                         .filter(contact=self)],
