@@ -8,6 +8,17 @@ function addJQ_addressbook_group_list() {
           });
         addJQ_addressbook_contact_list();
         load_contact_list_from_group_id(ALLCONTACTS_GROUP);
+
+        $("#groups li").droppable({
+            tolerance:'pointer',
+            drop: function( event, ui ) { 
+                var contact_id = ui.draggable.attr('contact_id');
+                var group_id = $(this).children("a").attr('group_id');
+                if (contact_id == undefined || group_id == undefined)
+                    return false;
+                $.getJSON('/addressbook/add_contact/'+ contact_id +'/to_group/' + group_id, function(){});
+            },
+        });
     });
 }
 
@@ -22,6 +33,15 @@ function load_contact_list_from_group_id(group_id) {
             row = "<tr><td><a href='#' contact_id=" + contact.id +">" + contact.name + "</a></td></tr>";
             $("#contacts_table").append(row);
         });
+
+
+        $("#contacts_table a").draggable({
+            revert: "invalid",
+            // containment: $("body"),
+            helper: 'clone',
+            cursor: "move"
+        });
+
         addJQ_addressbook_contact_info();
     });
 }
