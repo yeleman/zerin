@@ -31,7 +31,8 @@ class MainWindow(QtGui.QMainWindow):
 
         self.menubar = MenuBarTransfer(self)
         self.setMenuBar(self.menubar)
-        self.startTimer(3000) # 3s
+        # 3s
+        self.startTimer(3000)
 
     def change_context(self, context_widget, *args, **kwargs):
 

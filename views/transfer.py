@@ -19,7 +19,7 @@ def transfer_test():
 
 
 def transfer_info(*args, **kwargs):
-    from pprint import pprint as pp ; pp(request.form)
+    # from pprint import pprint as pp; pp(request.form)
 
     name = request.form.get('name')
     id_ = request.form.get('id')
