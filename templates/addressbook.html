@@ -23,15 +23,16 @@
                 <ul class="nav nav-list">
                     <li class="divider"></li>
                     <li class="nav-header">Nouveau</li>
-                    <li><input type="text" id="edit_contact_name" /></li>
-                    <li><button class="btn btn-small" type="button">Enregistrer</button></li>
+                    <li><input type="text" id="new-group-name" placeholder="Nom du groupe"/></li>
+                    <li id="add_group_btn"><button class="btn btn-small" type="button">Enregistrer</button></li>
                 </ul>
             </div>
             <div class="span10">
 
-                    <form class="form-search">
+                    <form class="form-search"><button id="group_delete_btn" group_id="-1" group_name="Tous" class="btn btn-danger disabled" type="button">Supprimer le groupe</button>
                     <input type="text" placeholder="Rechercher" class="input-medium search-query search">
                 </form>
+
                 <div class="" style="overflow-y:auto; height:50%;">
                     <table class="table table-striped table-bordered table-hover" id="contacts_table">
                     </table>
@@ -64,7 +65,7 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
-    addJQ_addressbook_group_list();
+    addressbook_init();
 });
 </script>
 </html>
