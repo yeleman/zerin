@@ -25,7 +25,7 @@ def addressbook_main():
 
 
 def addressbook_grouplist():
-    data = {'groups': [group.to_dict() 
+    data = {'groups': [group.to_dict()
                        for group in Group.filter().order_by("name")]}
     return json.dumps(data)
 
@@ -33,6 +33,7 @@ def addressbook_grouplist():
 def addressbook_contact(contact_id):
     data = {'contact': Contact.get(id=int(contact_id)).to_dict(True)}
     return json.dumps(data)
+
 
 def addressbook_contactlist(group_id):
     try:
@@ -90,6 +91,6 @@ def addressbook_add_contact_to_group(group_id, contact_id):
                     u"%(group)s: %(err)r" % subst,
                     message_html=u"Impossible d'ajouter <strong>%(contact)s</strong> au "
                                  u"groupe <strong>%(group)s</strong>:<br />"
-                                 u"<em>%(err)r</em>" % subst)            
+                                 u"<em>%(err)r</em>" % subst)
 
-    return json.dumps(data)
+    return json.dumps(data)    
