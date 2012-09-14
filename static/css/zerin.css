@@ -7,3 +7,28 @@ select, textarea, input[type="text"], input[type="password"], input[type="dateti
 input[type="text"].search {
     width: 20em;
 }
+
+li.ui-state-hover.droppable {
+    border-right: 3px solid #333333;
+}
+
+li.ui-state-active {
+    background-color: #dedede;
+    border-right: 3px solid red !important;
+}
+
+#alertbox {
+    position: relative;
+    float: right;
+    top: 1em;
+    right: 0;
+    max-width: 30%;
+}
+
+td.td-icon {
+    width: 10px;
+}
+
+td.td-link:hover {
+    cursor: pointer;
+}

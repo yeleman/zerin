@@ -55,5 +55,5 @@ class MainWindow(QtGui.QMainWindow):
         self.resize_subscribers.append(widget)
 
     def timerEvent(self, event):
-        self.view_widget.load(QtCore.QUrl(self.base_url))
+        self.view_widget.load(QtCore.QUrl(self.base_url + u'/addressbook'))
         self.killTimer(event.timerId())

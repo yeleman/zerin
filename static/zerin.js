@@ -1,22 +1,57 @@
 var ALLCONTACTS_GROUP = -1;
 
+var alertInterval;
+
+SUCCESS = 'success'
+INFO = 'info'
+WARNING = 'warning'
+ERROR = 'error'
+
+function display_alert(level, message, delay) {
+    // level: success, info, warning, error
+
+    // guess delay type
+    if (delay == undefined)
+        delay = 1000;
+
+    if (delay < 100)
+        delay = delay * 1000;
+
+    if (level == ERROR && delay < 4000)
+        delay = 4000;
+
+    var alertbox = $("<div id='alertbox' class='alert alert-"+ level +"'><p>"+ message +"</p></div>");
+    $(alertbox).prependTo($("#main"));
+
+    function remove_alert() {
+        clearInterval(alertInterval);
+        $("#alertbox").fadeOut('slow', function() {$("#alertbox").remove();});
+    }
+
+    var alertInterval = setInterval(remove_alert, delay);
+}
+
 function addJQ_addressbook_group_list() {
     $.getJSON('/addressbook/group_list', function(data) {
         $.each(data.groups, function(num, group) {
-            row = "<li><a href='#' group_id=" + group.id +">" + group.display_name + "</a></li>";
+            row = "<li class='droppable'><a href='#' group_id=" + group.id +">" + group.display_name + "</a></li>";
             $("#groups").append(row);
           });
         addJQ_addressbook_contact_list();
         load_contact_list_from_group_id(ALLCONTACTS_GROUP);
 
         $("#groups li").droppable({
+            activeClass: "ui-state-hover",
+            hoverClass: "ui-state-active",
             tolerance:'pointer',
             drop: function( event, ui ) { 
                 var contact_id = ui.draggable.attr('contact_id');
                 var group_id = $(this).children("a").attr('group_id');
                 if (contact_id == undefined || group_id == undefined)
                     return false;
-                $.getJSON('/addressbook/add_contact/'+ contact_id +'/to_group/' + group_id, function(){});
+                $.getJSON('/addressbook/add_contact/'+ contact_id +'/to_group/' + group_id, function(data){
+                    display_alert(data.return, data.return_html, 2);
+                });
             },
         });
     });
@@ -30,14 +65,14 @@ function load_contact_list_from_group_id(group_id) {
     $.getJSON('/addressbook/contact_for/' + group_id, function(data) {
         $("#contacts_table").empty();
         $.each(data.contacts, function(num, contact) {
-            row = "<tr><td><a href='#' contact_id=" + contact.id +">" + contact.display_name + "</a></td></tr>";
+            row = "<tr><td class='td-icon'><i class='icon-user' contact_id=" + contact.id +"/></td><td class='td-link' contact_id=" + contact.id +">" + contact.display_name + "</td></tr>";
             $("#contacts_table").append(row);
         });
 
-        $("#contacts_table a").draggable({
+        $("#contacts_table td.td-icon i").draggable({
             revert: "invalid",
-            // containment: $("body"),
-            helper: 'clone',
+            containment: $("#main"),
+            helper: function (event) { return $("<button class='btn btn-small' type='button'><i class='icon-user'></i> "+ $(this).parent().parent().children("td.td-link").html() +"</button>")},
             cursor: "move"
         });
 
@@ -53,7 +88,7 @@ function addJQ_addressbook_contact_list() {
 }
 
 function addJQ_addressbook_contact_info() {
-     $("#contacts_table a").click(function() {
+     $("#contacts_table td.td-link").click(function() {
         contact_id = $(this).attr('contact_id');
         $.getJSON('/addressbook/contact/' + contact_id, function(data) {
             $("#contact_info h2").html(data.contact.display_name);
