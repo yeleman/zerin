@@ -1,0 +1,4 @@
+desub
+requests
+flask
+peewee
