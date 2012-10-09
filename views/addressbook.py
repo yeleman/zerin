@@ -2,7 +2,6 @@
 
 import json
 import sqlite3
-import peewee
 
 from flask import render_template, request
 

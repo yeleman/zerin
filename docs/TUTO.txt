@@ -1,0 +1,116 @@
+###################################
+#  Helper                          #
+#                                  #
+#  Autor:                          #
+#                                  #
+#                                  #
+#                                  #
+###################################
+
+Requirements:
+    PySide, flask
+
+
+Création d'une page simple
+
+1. création la page html du non 'test.html':
+    exemple:
+        """
+            <html>
+            <head>
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+            <!-- <link rel="stylesheet" media="screen" type="text/css" href="/static/css/zerin.css" /> -->
+            <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.min.css" />
+            <title>Hello</title>
+
+            </head>
+            <body>
+            <div class="container">
+                <h1>Fadiga Dolo</h1>
+                <button id="update_btn" type="text">CLICK ME!</button>
+                <div id="content" style="display:none;">
+                    <h2>Envois recents</h2>
+                    <table id="sent_table"  class="table table-striped">
+                        <tr><th>Numero</th><th>Nom</th><th>Statut</th></tr>
+                    </table>
+                </div>
+            </div>
+            </body>
+            <script type="text/javascript" src="/static/jquery-1.8.1.min.js"></script>
+            <script type="text/javascript" src="/static/bootstrap/js/bootstrap.min.js"></script>
+
+            <script type="text/javascript">
+            $(document).ready(function(){
+                 $("#update_btn").click(function(event){
+                    # On recupère le json envoyé depuis la vue
+                    $.getJSON('/test', function(data) {
+                      # On boucle sur les éléments de data
+                      $.each(data.sent, function(num, dd) {
+                        row = "<tr><td>" + dd.number + "</td><td>" + dd.name + "</td><td>" + dd.status + "</td></tr>"
+                        $("#sent_table").append(row);
+
+                      });
+                    $("#content").show();
+
+                    });
+                });
+
+            });
+            </script>
+            </html>
+        """
+
+2. les views:
+    exemple:
+        on affiche la page html
+        def test_views():
+            return render_template('test.html')
+
+        On envoi les données
+
+        def test():
+            data = {'sent': [
+                {'number': '73 12 08 96', 'name': 'reg', 'status': 'sent'},
+                {'number': '65 73 10 76', 'name': 'fad', 'status': 'delivered'},
+                {'number': '65 73 10 76', 'name': 'Alou DOlo', 'status': 'delivered'},
+            ]}
+            return json.dumps(data)
+            # json.dumps return le data au format supporté par java script
+
+3. url:
+    exemple:
+
+        from flask import Flask
+        app = Flask('zerin_server')
+
+        # app.route("url")("nane vue")
+        
+        app.route('/')(test_views) # pour affichier la page test.
+
+        app.route('/test')(test) # pour recupére les données
+
+        On peut aussi passer des arguments a url
+        app.route('/***/<arg>')(name vue)
+
+4: Utilisation d'un formulaire:
+
+    exemple:
+        code html:
+            ...
+                <form class="form-inline">
+                    <ul class="nav nav-list">
+                        <li class="divider"></li>
+                        <li class="nav-header">Nouveau</li>
+                        <li><input type="text" id="new-group-name" placeholder="Nom du groupe"/></li>
+                        <li id="add_group_btn"><button class="btn btn-small" type="button">Enregistrer</button></li>
+                    </ul>
+                </form>
+            ...
+
+        url:
+            app.route('/test_views', methods=['POST'])(test_views)
+
+        la vue:
+            def test_views():
+
+                value = request.form.get('values', None)
