@@ -1,0 +1,45 @@
+Les taches du Zerin
+*******************
+
+Faire la page login
+    * design de l'affichage
+    * enregistrement de mot de passe pour la 1ere fois
+    * verification de mot de passe
+
+Faire la page de transfert (Alou):
+    * design de l'affichage
+    * operation de transfert
+        * autocomplete sur le champ numero de phone
+        * transfert (enregistrement)
+        * transfert multiple (meme montant a plusieurs numero separé par des virgules)
+        * notification de transfert
+        * propose l'ajouter du numero apres le transfert dans la liste des contacts
+    * historique des transfert (24h)
+    * veille avec mot de passe (blocage rapide)
+
+Faire la page de addressbook (Fad):
+    * design de l'affichage
+    * creation de groupe
+    * creation de contact
+    * mise à jour de contact
+    * historique de transfert par contact
+    * recherche de contact
+    * changement de groupe d'un contact
+    * suppression de groupe
+
+Faire la page d'aide (Fad):
+    * faire le contenu de l'aide
+
+Faire la page de configuration (Alou):
+    * gestion de profile
+        * changement de mot de passe
+    * gestion des operateur
+        * ajout d'operateur
+        * choix d'operateur
+        * code d'envoi et consultation de credit
+    
+Faire la page Statistique d'utilisation (Fad):
+    * graphe du montant de credit transferé par semaine
+
+Faire la partie gammu (Reg):
+     ******** pas elaborer ***********
