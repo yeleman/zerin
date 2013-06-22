@@ -28,9 +28,14 @@ app.route('/test')(transfer_test)
 app.route('/info', methods=['POST'])(transfer_info)
 
 
-if __name__ == '__main__':
+def runserver(debug=True):
+    from database import setup
+    setup()
     try:
         http_port = int(sys.argv[1])
     except:
         http_port = 5000
-    app.run(debug=True, port=http_port)
+    app.run(debug=debug, port=http_port, host='0.0.0.0')
+
+if __name__ == '__main__':
+    runserver()
